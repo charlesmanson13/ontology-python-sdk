@@ -19,7 +19,14 @@ from ontology.crypto.signature_handler import SignatureHandler
 
 
 class Account(object):
-    def __init__(self, private_key: str, scheme=SignatureScheme.SHA256withECDSA):
+    def __init__(self, private_key, scheme=SignatureScheme.SHA256withECDSA):
+        """
+
+        :param private_key:
+        :type private_key: basestring
+        :param scheme:
+        :type scheme: SignatureScheme
+        """
         self.__signature_scheme = scheme
         if scheme == SignatureScheme.SHA256withECDSA:
             self.__keyType = KeyType.ECDSA
@@ -38,7 +45,15 @@ class Account(object):
         self.__publicKey = Signature.ec_get_pubkey_by_prikey(self.__private_key, self.__curve_name)  # 33 bytes
         self.__address = Address.address_from_bytes_pubkey(self.__publicKey)  # address is a class type
 
-    def generate_signature(self, msg: bytes, signature_scheme: SignatureScheme):
+    def generate_signature(self, msg, signature_scheme):
+        """
+
+        :param msg:
+        :type msg: bytes
+        :param signature_scheme:
+        :type signature_scheme: SignatureScheme
+        :return:
+        """
         if signature_scheme == SignatureScheme.SHA256withECDSA:
             handler = SignatureHandler(self.__keyType, signature_scheme)
             signature_value = handler.generateSignature(b2a_hex(self.__private_key), msg)
@@ -54,11 +69,11 @@ class Account(object):
         """
         return self.__address  # __address is a class not a string or bytes
 
-    def get_address_base58(self) -> str:
+    def get_address_base58(self):
         """
         This interface is used to get the base58 encode account address.
 
-        :return:
+        :return: basestring
         """
         return self.__address.b58encode()
 
@@ -78,40 +93,43 @@ class Account(object):
         """
         return self.__address.to_reverse_hex_str()
 
-    def get_public_key_bytes(self) -> bytes:
+    def get_public_key_bytes(self):
         """
         This interface is used to get the account's public key in the form of bytes.
 
-        :return: the public key in the form of bytes.
+        :return: bytes the public key in the form of bytes.
         """
         return self.__publicKey
 
-    def get_public_key_hex(self) -> str:
+    def get_public_key_hex(self):
         """
         This interface is used to get the account's hexadecimal public key in the form of string.
 
-        :return: the hexadecimal public key in the form of string.
+        :return: basestring the hexadecimal public key in the form of string.
         """
         return binascii.b2a_hex(self.__publicKey).decode('ascii')
 
-    def get_signature_scheme(self) -> SignatureScheme:
+    def get_signature_scheme(self):
         """
         This interface allow to get he signature scheme used in account
 
-        :return: he signature scheme used in account.
+        :return: SignatureScheme he signature scheme used in account.
         """
         return self.__signature_scheme
 
-    def export_gcm_encrypted_private_key(self, password: str, salt: str, n: int) -> str:
+    def export_gcm_encrypted_private_key(self, password, salt, n):
         """
         This interface is used to export an AES algorithm encrypted private key with the mode of GCM.
 
         :param password: the secret pass phrase to generate the keys from.
+        :type password: basestring
         :param salt: A string to use for better protection from dictionary attacks.
                       This value does not need to be kept secret, but it should be randomly chosen for each derivation.
                       It is recommended to be at least 8 bytes long.
+        :type salt: basestring
         :param n: CPU/memory cost parameter. It must be a power of 2 and less than 2**32
-        :return: an gcm encrypted private key in the form of string.
+        :type n: int
+        :return: basestring an gcm encrypted private key in the form of string.
         """
         r = 8
         p = 8
@@ -129,18 +147,23 @@ class Account(object):
         return encrypted_key_str.decode()
 
     @staticmethod
-    def get_gcm_decoded_private_key(encrypted_key_str: str, password: str, b58_address: str, salt: str, n: int,
-                                    scheme: SignatureScheme) -> str:
+    def get_gcm_decoded_private_key(encrypted_key_str, password, b58_address, salt, n, scheme):
         """
         This interface is used to decrypt an private key which has been encrypted.
 
         :param encrypted_key_str: an gcm encrypted private key in the form of string.
+        :type encrypted_key_str: basestring
         :param password: the secret pass phrase to generate the keys from.
+        :type password: basestring
         :param b58_address: a base58 encode address which should be correspond with the private key.
+        :type b58_address: basestring
         :param salt: a string to use for better protection from dictionary attacks.
+        :type salt: basestring
         :param n: CPU/memory cost parameter.
+        :type n: int
         :param scheme: the signature scheme.
-        :return: a private key in the form of string.
+        :type scheme: SignatureScheme
+        :return: basestring a private key in the form of string.
         """
         r = 8
         p = 8
@@ -149,7 +172,7 @@ class Account(object):
         derivedkey = scrypt.generate_kd(password, salt)
         iv = derivedkey[0:12]
         derivedhalf2 = derivedkey[32:64]
-        encrypted_key = base64.b64decode(encrypted_key_str).hex()
+        encrypted_key = base64.b64decode(encrypted_key_str).encode('hex')
         mac_tag = a2b_hex(encrypted_key[64:96])
         cipher_text = a2b_hex(encrypted_key[0:64])
         pri_key = AESHandler.aes_gcm_decrypt_with_iv(cipher_text, b58_address.encode(), mac_tag, derivedhalf2, iv)
@@ -167,20 +190,20 @@ class Account(object):
         """
         return self.__private_key
 
-    def serialize_public_key(self) -> bytes:
+    def serialize_public_key(self):
         """
         This interface is used to get the public key in the form of bytes.
 
-        :return: the public key in the form of bytes.
+        :return: bytes the public key in the form of bytes.
         """
         return self.__publicKey
 
-    def export_wif(self) -> str:
+    def export_wif(self):
         """
         This interface is used to get export ECDSA private key in the form of WIF which
         is a way to encoding an ECDSA private key and make it easier to copy.
 
-        :return: a WIF encode private key.
+        :return: basestring a WIF encode private key.
         """
         data = b'\x80'
         data = data + self.serialize_private_key()
@@ -191,20 +214,21 @@ class Account(object):
         return wif.decode('ascii')
 
     @staticmethod
-    def get_private_key_from_wif(wif: str) -> bytes:
+    def get_private_key_from_wif(wif):
         """
         This interface is used to decode a WIF encode ECDSA private key.
 
         :param wif: a WIF encode private key.
-        :return: a ECDSA private key in the form of bytes.
+        :type wif: basestring
+        :return: bytes a ECDSA private key in the form of bytes.
         """
         if wif is None or wif is "":
             raise Exception("none wif")
         data = base58.b58decode(wif)
-        if len(data) != 38 or data[0] != 0x80 or data[33] != 0x01:
+        if len(data) != 38 or data[0] != '\x80' or data[33] != '\x01':
             raise Exception("wif wrong")
         checksum = Digest.hash256(data[0:34])
         for i in range(4):
-            if data[len(data) - 4 + i] != checksum[i]:
+            if data[- 4 + i] != checksum[i]:
                 raise Exception("wif wrong")
         return data[1:33]

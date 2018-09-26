@@ -13,7 +13,14 @@ class SignatureHandler(object):
         self.__type = key_type
         self.__scheme = scheme
 
-    def generateSignature(self, pri_key, msg:bytes):
+    def generateSignature(self, pri_key, msg):
+        """
+
+        :param pri_key:
+        :param msg:
+        :type msg: bytes
+        :return:
+        """
         if self.__scheme == SignatureScheme.SHA224withECDSA:
             private_key = ec.derive_private_key(int(pri_key, 16), ec.SECP224R1(), default_backend())
             signature = private_key.sign(
@@ -40,10 +47,4 @@ class SignatureHandler(object):
     @staticmethod
     def dsa_der_to_plain(signature):
         r, s = utils.decode_dss_signature(signature)
-        r = hex(r)[2:]
-        if len(r) < 64:
-            r = "".join(['0' for i in range(64-len(r))]) + r
-        s = hex(s)[2:]
-        if len(s) < 64:
-            s = "".join(['0' for i in range(64-len(s))]) + s
-        return r + s
+        return '{:064x}{:064x}'.format(r, s)

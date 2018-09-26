@@ -53,7 +53,7 @@ class BinaryWriter(object):
         elif type(value) is str:
             self.stream.write(value.encode('utf-8'))
         elif type(value) is int:
-            self.stream.write(bytes([value]))
+            self.stream.write(chr(value))
 
     def write_bytes(self, value, unhex=True):
         """
@@ -69,7 +69,7 @@ class BinaryWriter(object):
         if unhex:
             try:
                 value = binascii.unhexlify(value)
-            except binascii.Error:
+            except (binascii.Error, TypeError):
                 pass
         return self.stream.write(value)
 

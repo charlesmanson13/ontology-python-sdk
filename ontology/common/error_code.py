@@ -4,7 +4,15 @@
 
 class ErrorCode:
     @staticmethod
-    def get_error(code: int, msg: str) -> dict:
+    def get_error(code, msg):
+        """
+
+        :param code:
+        :type code: int
+        :param msg:
+        :type msg: basestring
+        :return: dict
+        """
         data = dict()
         data['error'] = code
         data['desc'] = msg
@@ -54,7 +62,13 @@ class ErrorCode:
     target_hashes_err = get_error.__func__(54002, "targetHashes error")
 
     @staticmethod
-    def constructed_root_hash_err(msg: str) -> dict:
+    def constructed_root_hash_err(msg):
+        """
+
+        :param msg:
+        :type msg: basestring
+        :return: dict
+        """
         return ErrorCode.get_error(54003, "Other Error, " + msg)
 
     assert_failed_hash_full_tree = get_error.__func__(54004, "assert failed in hash full tree")
@@ -69,7 +83,13 @@ class ErrorCode:
     param_error = get_error.__func__(58004, "param error")
 
     @staticmethod
-    def param_err(msg: str):
+    def param_err(msg):
+        """
+
+        :param msg:
+        :type msg: basestring
+        :return:
+        """
         return ErrorCode.get_error(58005, msg)
 
     did_null = get_error.__func__(58006, "OntIdTx Error, SendDid or receiverDid is null in metaData")
@@ -88,7 +108,13 @@ class ErrorCode:
     expire_err = get_error.__func__(58017, "OntIdTx Error, expire is wrong")
 
     @staticmethod
-    def get_status_err(msg: str) -> dict:
+    def get_status_err(msg):
+        """
+
+        :param msg:
+        :type msg: basestring
+        :return: dict
+        """
         return ErrorCode.get_error(58017, "GetStatus Error," + msg)
 
     # OntAsset Error
@@ -112,7 +138,13 @@ class ErrorCode:
     connect_url_err = get_error.__func__(58402, "Interfaces Error, connect error:")
 
     @staticmethod
-    def connect_err(msg: str) -> dict:
+    def connect_err(msg):
+        """
+
+        :param msg:
+        :type msg: basestring
+        :return: dict
+        """
         return ErrorCode.get_error(58403, "connect error: " + msg)
 
     # WalletManager Error
@@ -121,5 +153,11 @@ class ErrorCode:
     get_account_by_index_err = get_error.__func__(58503, 'WalletManager Error, get account by index error')
 
     @staticmethod
-    def other_error(msg: str) -> dict:
+    def other_error(msg):
+        """
+
+        :param msg:
+        :type msg: basestring
+        :return: dict
+        """
         return ErrorCode.get_error(59000, "Other Error, " + msg)

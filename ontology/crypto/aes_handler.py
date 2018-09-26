@@ -17,14 +17,40 @@ class AESHandler(object):
         return key
 
     @staticmethod
-    def aes_gcm_encrypt_with_iv(plain_text: bytes, hdr: bytes, key: bytes, iv: bytes):
+    def aes_gcm_encrypt_with_iv(plain_text, hdr, key, iv):
+        """
+
+        :param plain_text:
+        :type plain_text: bytes
+        :param hdr:
+        :type hdr: bytes
+        :param key:
+        :type key: bytes
+        :param iv:
+        :type iv: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_GCM, nonce=iv)
         cipher.update(hdr)
         cipher_text, mac_tag = cipher.encrypt_and_digest(plain_text)
         return mac_tag, cipher_text
 
     @staticmethod
-    def aes_gcm_decrypt_with_iv(cipher_text: bytes, hdr: bytes, mac_tag: bytes, key: bytes, iv: bytes):
+    def aes_gcm_decrypt_with_iv(cipher_text, hdr, mac_tag, key, iv):
+        """
+
+        :param cipher_text:
+        :type cipher_text: bytes
+        :param hdr:
+        :type hdr: bytes
+        :param mac_tag:
+        :type mac_tag: bytes
+        :param key:
+        :type key: bytes
+        :param iv:
+        :type iv: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_GCM, nonce=iv)
         cipher.update(hdr)
         try:
@@ -36,7 +62,17 @@ class AESHandler(object):
         return plain_text
 
     @staticmethod
-    def aes_gcm_encrypt(plain_text: bytes, hdr: bytes, key: bytes):
+    def aes_gcm_encrypt(plain_text, hdr, key):
+        """
+
+        :param plain_text:
+        :type plain_text: bytes
+        :param hdr:
+        :type hdr: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_GCM)
         cipher.update(hdr)
         cipher_text, mac_tag = cipher.encrypt_and_digest(plain_text)
@@ -44,7 +80,21 @@ class AESHandler(object):
         return nonce, mac_tag, cipher_text
 
     @staticmethod
-    def aes_gcm_decrypt(cipher_text: bytes, hdr: bytes, nonce: bytes, mac_tag: bytes, key: bytes):
+    def aes_gcm_decrypt(cipher_text, hdr, nonce, mac_tag, key):
+        """
+
+        :param cipher_text:
+        :type cipher_text: bytes
+        :param hdr:
+        :type hdr: bytes
+        :param nonce:
+        :type nonce: bytes
+        :param mac_tag:
+        :type mac_tag: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_GCM, nonce=nonce)
         cipher.update(hdr)
         try:
@@ -56,25 +106,61 @@ class AESHandler(object):
         return plain_text
 
     @staticmethod
-    def aes_ctr_encrypt(plain_text: bytes, key: bytes):
+    def aes_ctr_encrypt(plain_text, key):
+        """
+
+        :param plain_text:
+        :type plain_text: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_CTR)
         cipher_text = cipher.encrypt(plain_text)
         nonce = cipher.nonce
         return nonce, cipher_text
 
     @staticmethod
-    def aes_ctr_decrypt(cipher_text: bytes, nonce: bytes, key: bytes):
+    def aes_ctr_decrypt(cipher_text, nonce, key):
+        """
+
+        :param cipher_text:
+        :type cipher_text: bytes
+        :param nonce:
+        :type nonce: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_CTR, nonce=nonce)
         plain_text = cipher.decrypt(cipher_text)
         return plain_text
 
     @staticmethod
-    def aes_cbc_encrypt(plain_text: bytes, key: bytes):
+    def aes_cbc_encrypt(plain_text, key):
+        """
+
+        :param plain_text:
+        :type plain_text: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         iv = AESHandler.__generate_iv()
         cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
         return cipher.IV, cipher.encrypt(pad(plain_text, AES.block_size))
 
     @staticmethod
-    def aes_cbc_decrypt(cipher_text: bytes, iv: bytes, key: bytes):
+    def aes_cbc_decrypt(cipher_text, iv, key):
+        """
+
+        :param cipher_text:
+        :type cipher_text: bytes
+        :param iv:
+        :type iv: bytes
+        :param key:
+        :type key: bytes
+        :return:
+        """
         cipher = AES.new(key=key, mode=AES.MODE_CBC, iv=iv)
         return unpad(cipher.decrypt(cipher_text), AES.block_size)

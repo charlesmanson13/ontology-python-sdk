@@ -17,16 +17,28 @@ class ParamsBuilder:
     def emit(self, op):
         self.write_byte(op)
 
-    def emit_push_bool(self, data: bool):
+    def emit_push_bool(self, data):
+        """
+
+        :param data:
+        :type data: bool
+        :return:
+        """
         return self.emit(PUSHT) if data else self.emit(PUSHF)
 
-    def emit_push_integer(self, num: int):
+    def emit_push_integer(self, num):
+        """
+
+        :param num:
+        :type num: int
+        :return:
+        """
         if num == -1:
             return self.emit(PUSHM1)
         elif num == 0:
             return self.emit(PUSH0)
         elif 0 < num < 16:
-            return self.emit(int.from_bytes(PUSH1, 'little') - 1 + num)
+            return self.emit(ord(PUSH1) - 1 + num)
         # elif num < 0x10000:
         #     return self.emit_push_byte_array(num.to_bytes(2, "little"))
         # elif num.bit_length() < 32:
@@ -44,7 +56,7 @@ class ParamsBuilder:
 
     def emit_push_byte_array(self, data):
         l = len(data)
-        if l < int.from_bytes(PUSHBYTES75, 'little'):
+        if l < ord(PUSHBYTES75):
             self.write_byte(bytearray([l]))
         elif l < 0x100:
             self.emit(PUSHDATA1)
@@ -67,7 +79,7 @@ class ParamsBuilder:
         elif isinstance(value, str):
             self.ms.write(value.encode())
         elif isinstance(value, int):
-            self.ms.write(bytes([value]))
+            self.ms.write(chr(value))
         else:
             raise SDKException(ErrorCode.param_err('type error, write byte failed.'))
 

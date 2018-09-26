@@ -13,24 +13,73 @@ from ontology.smart_contract.neo_contract.abi.build_params import BuildParams
 
 
 class Nep5(object):
-    def __init__(self, sdk: OntologySdk):
+    def __init__(self, sdk):
+        """
+
+        :param sdk:
+        :type sdk: OntologySdk
+        """
         self.nep5_abi = '{\"hash\":\"0xd17d91a831c094c1fd8d8634b8cd6fa9fbaedc99\",\"entrypoint\":\"Main\"," + "\"functions\":[{\"name\":\"Name\",\"parameters\":[],\"returntype\":\"String\"}," + "{\"name\":\"Symbol\",\"parameters\":[],\"returntype\":\"String\"}," + "{\"name\":\"Decimals\",\"parameters\":[],\"returntype\":\"Integer\"},{\"name\":\"Main\",\"parameters\":[{\"name\":\"operation\",\"type\":\"String\"}," + "{\"name\":\"args\",\"type\":\"Array\"}],\"returntype\":\"Any\"}," + "{\"name\":\"Init\",\"parameters\":[],\"returntype\":\"Boolean\"}," + "{\"name\":\"TotalSupply\",\"parameters\":[],\"returntype\":\"Integer\"}," + "{\"name\":\"Transfer\",\"parameters\":[{\"name\":\"from\",\"type\":\"ByteArray\"},{\"name\":\"to\",\"type\":\"ByteArray\"},{\"name\":\"value\",\"type\":\"Integer\"}],\"returntype\":\"Boolean\"}," + "{\"name\":\"BalanceOf\",\"parameters\":[{\"name\":\"address\",\"type\":\"ByteArray\"}],\"returntype\":\"Integer\"}]," + "\"events\":[{\"name\":\"transfer\",\"parameters\":[{\"name\":\"arg1\",\"type\":\"ByteArray\"},{\"name\":\"arg2\",\"type\":\"ByteArray\"},{\"name\":\"arg3\",\"type\":\"Integer\"}],\"returntype\":\"Void\"}]}'
         self.__sdk = sdk
         self.contract_addr = "d17d91a831c094c1fd8d8634b8cd6fa9fbaedc99"
 
-    def set_contract_addr(self, addr: str):
+    def set_contract_addr(self, addr):
+        """
+
+        :param addr:
+        :type addr: basestring
+        :return:
+        """
         self.contract_addr = addr
 
     def get_contract_addr(self):
         return self.contract_addr
 
-    def send_init(self, acct: Account, payer: Account, gaslimit: int, gasprice: int):
+    def send_init(self, acct, payer, gaslimit, gasprice):
+        """
+
+        :param acct:
+        :type acct: Account
+        :param payer:
+        :type payer: Account
+        :param gaslimit:
+        :type gaslimit: int
+        :param gasprice:
+        :type gasprice: int
+        :return:
+        """
         return self.__send_init(acct, payer, gaslimit, gasprice, False)
 
-    def send_init_pre_exec(self, acct: Account, payer: Account, gaslimit: int, gasprice: int):
+    def send_init_pre_exec(self, acct, payer, gaslimit, gasprice):
+        """
+
+        :param acct:
+        :type acct: Account
+        :param payer:
+        :type payer: Account
+        :param gaslimit:
+        :type gaslimti: int
+        :param gasprice:
+        :type gasprice: int
+        :return:
+        """
         return self.__send_init(acct, payer, gaslimit, gasprice, True)
 
-    def __send_init(self, acct: Account, payer_acct: Account, gas_limit: int, gas_price: int, pre_exec=False):
+    def __send_init(self, acct, payer_acct, gas_limit, gas_price, pre_exec=False):
+        """
+
+        :param acct:
+        :type acct: Account
+        :param payer_acct:
+        :type payer_acct: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :param pre_exec:
+        :type pre_exec: bool
+        :return:
+        """
         if self.contract_addr is None or self.contract_addr == "":
             raise Exception("null code_address")
         abi = json.loads(self.nep5_abi, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))

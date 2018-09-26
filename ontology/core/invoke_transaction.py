@@ -12,5 +12,11 @@ class InvokeTransaction(Transaction):
         self.tx_type = 0xd1
         self.code = None
 
-    def serialize_exclusive_data(self, writer: BinaryWriter):
+    def serialize_exclusive_data(self, writer):
+        """
+
+        :param writer:
+        :type writer: BinaryWriter
+        :return:
+        """
         writer.write_var_bytes(self.code)

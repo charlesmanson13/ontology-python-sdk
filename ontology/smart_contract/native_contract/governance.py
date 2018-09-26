@@ -30,11 +30,33 @@ class Governance(object):
     def __init__(self, sdk):
         self.__sdk = sdk
 
-    def register_candidate(self, account: Account, peer_pubkey: str, init_pos: int, identity: Identity, password: str, key_no: int,
-                          payer: Account, gas_limit: int, gas_price: int):
+    def register_candidate(self, account, peer_pubkey, init_pos, identity, password, key_no,
+                          payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_pubkey:
+        :type peer_pubkey: basestring
+        :param init_pos:
+        :type init_pos: int
+        :param identity:
+        :type identity: Identity
+        :param password:
+        :type password: basestring
+        :param key_no:
+        :type key_no: int
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_pubkey": peer_pubkey, "address": account.get_address().to_array(), "init_pos": init_pos, "ontid": identity.ont_id.encode(), "key_no": key_no}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "registerCandidate", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "registerCandidate", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [],
                            bytearray())
@@ -46,10 +68,24 @@ class Governance(object):
         res = self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def unregister_candidate(self, account: Account, peer_pubkey: str, payer: Account, gas_limit: int, gas_price: int):
+    def unregister_candidate(self, account, peer_pubkey, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_pubkey:
+        :type peer_pubkey: basestring
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_pubkey":peer_pubkey, "address": account.get_address().to_array()}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "unRegisterCandidate", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "unRegisterCandidate", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -58,10 +94,22 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def withdraw_ong(self, account: Account, payer: Account, gas_limit: int, gas_price: int):
+    def withdraw_ong(self, account, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :tyep gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"address": account.get_address().to_array()}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "withdrawOng", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "withdrawOng", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -70,10 +118,22 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def withdraw_fee(self, account: Account, payer: Account, gas_limit: int, gas_price: int):
+    def withdraw_fee(self, account, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"address": account.get_address().to_array()}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "withdrawFee", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "withdrawFee", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -82,7 +142,23 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def authorize_for_peer(self, account: Account, peer_publickeys: list, pos_lists: list, payer: Account, gas_limit: int, gas_price: int):
+    def authorize_for_peer(self, account, peer_publickeys, pos_lists, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickeys:
+        :type peer_publickeys: list
+        :param pos_lists:
+        :type pos_lists: list
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(pos_lists):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
@@ -92,7 +168,7 @@ class Governance(object):
         param["pos_lists_length"] = len(pos_lists)
         for i in range(len(pos_lists)):
             param["pos_lists" + str(i)] = pos_lists[i]
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "authorizeForPeer", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "authorizeForPeer", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -101,7 +177,23 @@ class Governance(object):
         res = self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def unauthorize_for_peer(self, account: Account, peer_publickeys: [], pos_lists: [], payer: Account, gas_limit: int, gas_price: int):
+    def unauthorize_for_peer(self, account, peer_publickeys, pos_lists, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickeys:
+        :type peer_publickeys: list
+        :param pos_lists:
+        :type pos_lists: list
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(pos_lists):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
@@ -111,7 +203,7 @@ class Governance(object):
         param["pos_lists_length"] = len(pos_lists)
         for i in range(len(pos_lists)):
             param["pos_lists" + str(i)] = pos_lists[i]
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "unAuthorizeForPeer", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "unAuthorizeForPeer", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -120,7 +212,23 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def withdraw(self, account: Account, peer_publickeys: list, withdraw_list: list, payer: Account, gas_limit: int, gas_price: int):
+    def withdraw(self, account, peer_publickeys, withdraw_list, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickeys:
+        :type peer_publickeys: list
+        :param withdraw_list:
+        :type withdraw_list: list
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(withdraw_list):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
@@ -130,7 +238,7 @@ class Governance(object):
         param["pos_lists_length"] = len(withdraw_list)
         for i in range(len(withdraw_list)):
             param["pos_lists" + str(i)] = withdraw_list[i]
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "withdraw", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "withdraw", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -139,10 +247,24 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def quit_node(self, account: Account, peer_publickey: str, payer: Account, gas_limit: int, gas_price: int):
+    def quit_node(self, account, peer_publickey, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickey:
+        :type peer_publickey: basestring
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array()}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "quitNode", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "quitNode", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -151,10 +273,26 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def change_max_authorization(self, account: Account, peer_publickey: str, max_authorize: int, payer: Account, gas_limit: int, gas_price: int):
+    def change_max_authorization(self, account, peer_publickey, max_authorize, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickey:
+        :type peer_publickey: basestring
+        :param max_authorize:
+        :type max_authorize: int
+        :param payer:
+        :type payer: Accont
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "maxAuthorize": max_authorize}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "changeMaxAuthorization", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "changeMaxAuthorization", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -163,10 +301,26 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def add_init_pos(self, account: Account, peer_publickey: str, pos: int, payer: Account, gas_limit: int, gas_price: int):
+    def add_init_pos(self, account, peer_publickey, pos, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickey:
+        :type peer_publickey: basestring
+        :param pos:
+        :type pos: int
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "pos": pos}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "addInitPos", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "addInitPos", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -175,10 +329,26 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def reduce_init_pos(self, account: Account, peer_publickey: str, pos: int, payer: Account, gas_limit: int, gas_price: int):
+    def reduce_init_pos(self, account, peer_publickey, pos, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickey:
+        :type peer_publickey: basestring
+        :param pos:
+        :type pos: int
+        :param payer:
+        :type payer: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "pos": pos}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "reduceInitPos", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "reduceInitPos", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -187,10 +357,26 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def set_peer_cost(self, account: Account, peer_publickey: str, peer_cost: int, payer: Account, gas_limit: int, gas_price: int):
+    def set_peer_cost(self, account, peer_publickey, peer_cost, payer, gas_limit, gas_price):
+        """
+
+        :param account:
+        :type account: Account
+        :param peer_publickey:
+        :type peer_publickey: basestring
+        :param peer_cost:
+        :type peer_cost: int
+        :param payer:
+        :type payer: basestring
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "peer_cost": peer_cost}
-        invoke_code = build_native_invoke_code(contract_address, bytes([0]), "setPeerCost", param)
+        invoke_code = build_native_invoke_code(contract_address, chr(0), "setPeerCost", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
         self.__sdk.sign_transaction(tx, account)
@@ -199,7 +385,13 @@ class Governance(object):
         self.__sdk.rpc.send_raw_transaction(tx)
         return tx.hash256_explorer()
 
-    def get_peer_unbind_ong(self, address: str):
+    def get_peer_unbind_ong(self, address):
+        """
+
+        :param address:
+        :type address: basestring
+        :return:
+        """
         timestamp0 = 1530316800
         current_height = self.__sdk.rpc.get_block_count()
         block = self.__sdk.rpc.get_block_by_height(current_height - 1)
@@ -209,7 +401,17 @@ class Governance(object):
             return 0
         return self.calc_unbind_ong(total_stake.stake, total_stake.time_offset, timestamp)
 
-    def calc_unbind_ong(self, balance: int, start_offset: int, end_offset: int):
+    def calc_unbind_ong(self, balance, start_offset, end_offset):
+        """
+
+        :param balance:
+        :type balance: int
+        :param start_offset:
+        :type start_offset: int
+        :param end_offset:
+        :type end_offset: int
+        :return:
+        """
         amount = 0
         if start_offset >= end_offset:
             return 0
@@ -236,13 +438,19 @@ class Governance(object):
         num_interval = len(self.UNBOUND_GENERATION_AMOUNT)
         return self.UNBOUND_TIME_INTERVAL * num_interval - (count - self.ONT_TOTAL_SUPPLY)
 
-    def get_total_stake(self, address: str):
+    def get_total_stake(self, address):
+        """
+
+        :param address:
+        :type address: basestring
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
         total_bytes = self.TOTAL_STAKE.encode('utf-8')
         address_bytes = Address.b58decode(address).to_array()
         key = total_bytes + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.hex(), key.hex())
+        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(res))
@@ -252,13 +460,19 @@ class Governance(object):
         stream.close()
         return total_stake
 
-    def get_peer_attributes(self, peer_pubkey: str):
+    def get_peer_attributes(self, peer_pubkey):
+        """
+
+        :param peer_pubkey:
+        :type peer_pubkey: basestring
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
         peer_attributes = self.PEER_ATTRIBUTES.encode('utf-8')
         peer_pubkey_bytes = a2b_hex(peer_pubkey.encode())
         key = peer_attributes + peer_pubkey_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.hex(), key.hex())
+        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         peer_attributes = PeerAttributes()
@@ -268,13 +482,19 @@ class Governance(object):
         stream.close()
         return peer_attributes.to_json()
 
-    def get_split_fee_address(self, address: str):
+    def get_split_fee_address(self, address):
+        """
+
+        :param address:
+        :type address: basestring
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
         split_fee_address_bytes = self.SPLIT_FEE_ADDRESS.encode()
         address_bytes = Address.b58decode(address).to_array()
         key = split_fee_address_bytes + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.hex(), key.hex())
+        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         split_fee_address = SplitFeeAddress()
@@ -284,7 +504,13 @@ class Governance(object):
         stream.close()
         return split_fee_address.to_json()
 
-    def get_peer_info(self, peer_pubkey: str):
+    def get_peer_info(self, peer_pubkey):
+        """
+
+        :param peer_pubkey:
+        :type peer_pubkey: basestring
+        :return:
+        """
         return self.__get_peer_pool_map(peer_pubkey)
 
     def get_peer_info_all(self):
@@ -293,7 +519,7 @@ class Governance(object):
     def __get_peer_pool_map(self, peer_pubkey=None):
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
-        view = self.__sdk.rpc.get_storage(contract_address.hex(), self.GOVERNANCE_VIEW.encode().hex())
+        view = self.__sdk.rpc.get_storage(contract_address.encode('hex'), self.GOVERNANCE_VIEW.encode().encode('hex'))
         if view is None or view == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(view))
@@ -307,7 +533,7 @@ class Governance(object):
         view_bytes = stream2.ToArray()
         peer_pool_bytes = self.PEER_POOL.encode('utf-8')
         key_bytes = peer_pool_bytes + a2b_hex(view_bytes)
-        value = self.__sdk.rpc.get_storage(contract_address.hex(), key_bytes.hex())
+        value = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key_bytes.encode('hex'))
         if value is None or value == '':
             return None
         stream3 = StreamManager.GetStream(bytearray.fromhex(value))
@@ -324,14 +550,22 @@ class Governance(object):
             return peer_pool_map[peer_pubkey]
         return peer_pool_map
 
-    def get_authorize_info(self, peer_pubkey: str, addr: Address):
+    def get_authorize_info(self, peer_pubkey, addr):
+        """
+
+        :param peer_pubkey:
+        :type peer_pubkey: basestring
+        :param addr:
+        :type addr: Address
+        :return:
+        """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
         peer_pubkey_prefix = bytearray.fromhex(peer_pubkey)
         address_bytes = addr.to_array()
         authorize_info_pool = self.AUTHORIZE_INFO_POOL.encode()
         key = authorize_info_pool + peer_pubkey_prefix + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.hex(), key.hex())
+        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(res))
@@ -347,7 +581,13 @@ class TotalStake(object):
         self.stake = 0
         self.time_offset = 0
 
-    def deserialize(self, reader: BinaryReader):
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
         self.address = Address(reader.read_bytes(20))
         self.stake = reader.read_int64()
         self.time_offset = reader.read_int32()
@@ -358,7 +598,13 @@ class SplitFeeAddress(object):
         self.address = None
         self.amount = 0
 
-    def deserialize(self, reader: BinaryReader):
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
         self.address = Address(reader.read_bytes(20))
         self.amount = reader.read_int64()
 
@@ -381,8 +627,14 @@ class PeerAttributes(object):
         self.field3 = bytearray()
         self.field4 = bytearray()
 
-    def deserialize(self, reader: BinaryReader):
-        self.peer_pubkey = a2b_hex(reader.read_var_str()).hex()
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
+        self.peer_pubkey = a2b_hex(reader.read_var_str()).encode('hex')
         self.max_authorize = reader.read_int64()
         self.old_peerCost = reader.read_int64()
         self.new_peer_cost = reader.read_int64()
@@ -417,8 +669,14 @@ class AuthorizeInfo(object):
         self.withdraw_freeze_pos = 0
         self.withdraw_unfreeze_pos = 0
 
-    def deserialize(self, reader: BinaryReader):
-        self.peer_pubkey = a2b_hex(reader.read_var_str()).hex()
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
+        self.peer_pubkey = a2b_hex(reader.read_var_str()).encode('hex')
         self.address = Address(reader.read_bytes(20))
         self.consensus_pos = reader.read_int64()
         self.freeze_pos = reader.read_int64()
@@ -446,10 +704,16 @@ class GovernanceView(object):
         self.height = 0
         self.tx_hash = None
 
-    def deserialize(self, reader: BinaryReader):
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
         self.view = reader.read_int32()
         self.height = reader.read_int32()
-        self.tx_hash = reader.read_bytes(32).hex()
+        self.tx_hash = reader.read_bytes(32).encode('hex')
 
 
 class PeerPoolItem(object):
@@ -461,9 +725,15 @@ class PeerPoolItem(object):
         self.init_pos = 0
         self.total_pos = 0
 
-    def deserialize(self, reader: BinaryReader):
+    def deserialize(self, reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
         self.index = reader.read_int32()
-        self.peer_pubkey = a2b_hex(reader.read_var_str()).hex()
+        self.peer_pubkey = a2b_hex(reader.read_var_str()).encode('hex')
         self.address = Address(reader.read_bytes(20))
         self.status = reader.read_byte()
         self.init_pos = reader.read_int64()

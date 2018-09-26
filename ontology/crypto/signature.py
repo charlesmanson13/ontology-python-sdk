@@ -15,7 +15,14 @@ class Signature(object):
         self.__value = signature_value
 
     @staticmethod
-    def ec_get_pubkey_by_prikey(privateKey: bytes, curve_name):
+    def ec_get_pubkey_by_prikey(privateKey, curve_name):
+        """
+
+        :param privateKey:
+        :type privateKey: bytes
+        :param curve_name:
+        :return:
+        """
         if curve_name == Curve.P256:
             private_key = SigningKey.from_string(string=(privateKey), curve=NIST256p)
             # public_key = private_key.get_verifying_key().to_string()
@@ -44,5 +51,5 @@ class Signature(object):
             raise TypeError
         bs = bytearray()
         bs.append(self.__scheme.value)
-        bs += bytearray.fromhex(self.__value)
+        bs += self.__value.decode('hex')
         return bs

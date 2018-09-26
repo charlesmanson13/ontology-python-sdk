@@ -1,6 +1,15 @@
 
 class AbiEvent(object):
-    def __init__(self, name: str, return_type: str, parameters: []):
+    def __init__(self, name, return_type, parameters):
+        """
+
+        :param name:
+        :type name: basestring
+        :param return_type:
+        :type return_type: basestring
+        :param parameters:
+        :type parameters: list
+        """
         self.name = name
         self.return_type = return_type
         self.parameters = parameters

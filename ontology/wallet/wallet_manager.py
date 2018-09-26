@@ -30,7 +30,13 @@ class WalletManager(object):
         self.wallet_in_mem = WalletData()
         self.wallet_path = ""
 
-    def open_wallet(self, wallet_path: str):
+    def open_wallet(self, wallet_path):
+        """
+
+        :param wallet_path:
+        :type wallet_path: basestring
+        :return:
+        """
         self.wallet_path = wallet_path
         if is_file_exist(wallet_path) is False:
             # create a new wallet file
@@ -89,18 +95,22 @@ class WalletManager(object):
     def set_signature_scheme(self, scheme):
         self.scheme = scheme
 
-    def import_identity(self, label: str, encrypted_pri_key: str, pwd: str, salt: str,
-                        b58_address: str) -> Identity or None:
+    def import_identity(self, label, encrypted_pri_key, pwd, salt, b58_address):
         """
         This interface is used to import identity by providing encrypted private key, password, salt and
         base58 encode address which should be correspond to the encrypted private key provided.
 
         :param label: a label for identity.
+        :type label: basestring
         :param encrypted_pri_key: an encrypted private key in base64 encoding from.
+        :type encrypted_pri_key: basestring
         :param pwd: a password which is used to encrypt and decrypt the private key.
+        :type pwd: basestring
         :param salt: a salt value which will be used in the process of encrypt private key.
+        :type salt: basestring
         :param b58_address: a base58 encode address which correspond with the encrypted private key provided.
-        :return: if succeed, an Identity object will be returned.
+        :type b58_address: basestring
+        :return: Identity | None if succeed, an Identity object will be returned.
         """
         scrypt_n = Scrypt().get_n()
         pri_key = Account.get_gcm_decoded_private_key(encrypted_pri_key, pwd, b58_address, salt, scrypt_n, self.scheme)
@@ -110,55 +120,88 @@ class WalletManager(object):
                 return self.wallet_in_mem.identities[index]
         return None
 
-    def create_identity(self, label: str, pwd: str) -> Identity:
+    def create_identity(self, label, pwd):
         """
 
         :param label: a label for identity.
+        :type label: basestring
         :param pwd: a password which will be used to encrypt and decrypt the private key.
-        :return: if succeed, an Identity object will be returned.
+        :type pwd: basestring
+        :return: Identity
         """
         pri_key = get_random_str(64)
         salt = get_random_str(16)
         return self.__create_identity(label, pwd, salt, pri_key)
 
-    def __create_identity(self, label: str, pwd: str, salt: str, private_key: str):
+    def __create_identity(self, label, pwd, salt, private_key):
+        """
+
+        :param label:
+        :type label: basestring
+        :param pwd:
+        :type pwd: basestring
+        :param salt:
+        :type salt: basestring
+        :param private_key:
+        :type private_key: basestring
+        :return:
+        """
         acct = self.__create_account(label, pwd, salt, private_key, False)
         info = IdentityInfo()
         info.ont_id = did_ont + acct.get_address_base58()
-        info.pubic_key = acct.serialize_public_key().hex()
-        info.private_key = acct.serialize_private_key().hex()
+        info.pubic_key = acct.serialize_public_key().encode('hex')
+        info.private_key = acct.serialize_private_key().encode('hex')
         info.pri_key_wif = acct.export_wif().encode('ascii')
         info.encrypted_pri_key = acct.export_gcm_encrypted_private_key(pwd, salt, Scrypt().get_n())
-        info.address_u160 = acct.get_address().to_array().hex()
+        info.address_u160 = acct.get_address().to_array().encode('hex')
         return self.wallet_in_mem.get_identity_by_ont_id(info.ont_id)
 
-    def create_identity_from_private_key(self, label: str, pwd: str, private_key: str) -> Identity:
+    def create_identity_from_private_key(self, label, pwd, private_key):
         """
         This interface is used to create identity based on given label, password and private key.
 
         :param label: a label for identity.
+        :type label: basestring
         :param pwd: a password which will be used to encrypt and decrypt the private key.
+        :type pwd: basestring
         :param private_key: a private key in the form of string.
-        :return: if succeed, an Identity object will be returned.
+        :type private_key: basestring
+        :return: Identity
         """
         salt = get_random_str(16)
         identity = self.__create_identity(label, pwd, salt, private_key)
         return identity
 
-    def create_account(self, label: str, pwd: str) -> AccountData:
+    def create_account(self, label, pwd):
         """
         This interface is used to create account based on given password and label.
 
         :param label: a label for account.
+        :type label: basestring
         :param pwd: a password which will be used to encrypt and decrypt the private key
-        :return: if succeed, return an data structure which contain the information of a wallet account.
+        :type pwd: basestring
+        :return: AccountData
         """
         pri_key = get_random_str(64)
         salt = get_random_str(16)
         account = self.__create_account(label, pwd, salt, pri_key, True)
         return self.wallet_in_mem.get_account_by_address(account.get_address_base58())
 
-    def __create_account(self, label: str, pwd: str, salt: str, private_key: str, account_flag: bool):
+    def __create_account(self, label, pwd, salt, private_key, account_flag):
+        """
+
+        :param label:
+        :type label: basestring
+        :param pwd:
+        :type pwd: basestring
+        :param salt:
+        :type salt: basestring
+        :param private_key:
+        :type private_key: basestring
+        :param account_flag:
+        :type account_flag: bool
+        :return:
+        """
         account = Account(private_key, self.scheme)
         # initialization
         if self.scheme == SignatureScheme.SHA256withECDSA:
@@ -169,7 +212,7 @@ class WalletManager(object):
         if pwd is not None:
             acct.key = account.export_gcm_encrypted_private_key(pwd, salt, Scrypt().get_n())
         else:
-            acct.key = account.serialize_private_key().hex()
+            acct.key = account.serialize_private_key().encode('hex')
 
         acct.address = account.get_address_base58()
         # set label
@@ -184,8 +227,8 @@ class WalletManager(object):
                 acct.is_default = True
                 self.wallet_in_mem.default_account_address = acct.address
             acct.label = label
-            acct.salt = base64.b64encode(salt.encode()).decode('ascii')
-            acct.public_key = account.serialize_public_key().hex()
+            acct.salt = base64.b64encode(salt).decode('ascii')
+            acct.public_key = account.serialize_public_key().encode('hex')
             self.wallet_in_mem.accounts.append(acct)
         else:
             for index in range(len(self.wallet_in_mem.identities)):
@@ -199,22 +242,26 @@ class WalletManager(object):
                 self.wallet_in_mem.default_ont_id = idt.ont_id
             ctl = Control(id="keys-1", key=acct.key, salt=base64.b64encode(salt.encode()).decode('ascii'),
                           address=acct.address,
-                          public_key=account.serialize_public_key().hex())
+                          public_key=account.serialize_public_key().encode('hex'))
             idt.controls.append(ctl)
             self.wallet_in_mem.identities.append(idt)
         return account
 
-    def import_account(self, label: str, encrypted_pri_key: str, pwd: str, base58_address: str,
-                       base64_salt: str) -> AccountData or None:
+    def import_account(self, label, encrypted_pri_key, pwd, base58_address, base64_salt):
         """
         This interface is used to import account by providing account data.
 
         :param label: str, wallet label
+        :type label: basestring
         :param encrypted_pri_key: str, an encrypted private key in base64 encoding from
+        :type encrypted_pri_key: basestring
         :param pwd: str, a password which is used to encrypt and decrypt the private key
+        :type pwd: basestring
         :param base58_address: str, a base58 encode  wallet address value
+        :type base58_address: basestring
         :param base64_salt: str, a base64 encode salt value which is used in the encryption of private key
-        :return:
+        :type base64_salt: basestring
+        :return: AccountData | None
             if succeed, return an data structure which contain the information of a wallet account.
             if failed, return a None object.
         """
@@ -228,25 +275,39 @@ class WalletManager(object):
                 return self.wallet_in_mem.accounts[index]
         return None
 
-    def create_account_info(self, label: str, pwd: str, salt: str, private_key: str) -> AccountInfo:
+    def create_account_info(self, label, pwd, salt, private_key):
+        """
+
+        :param label:
+        :type label: basestring
+        :param pwd:
+        :type pwd: basestring
+        :param salt:
+        :type salt: basestring
+        :param private_key:
+        :type private_key: basestring
+        :return: AccountInfo
+        """
         acct = self.__create_account(label, pwd, salt, private_key, True)
         info = AccountInfo()
         info.address_base58 = Address.address_from_bytes_pubkey(acct.serialize_public_key()).b58encode()
-        info.public_key = acct.serialize_public_key().hex()
+        info.public_key = acct.serialize_public_key().encode('hex')
         info.encrypted_pri_key = acct.export_gcm_encrypted_private_key(pwd, salt, Scrypt().get_n())
-        info.address_u160 = acct.get_address().to_array().hex()
+        info.address_u160 = acct.get_address().to_array().encode('hex')
         info.salt = salt
         return info
 
-    def create_account_from_private_key(self, label: str, password: str, private_key: str) -> AccountData or None:
+    def create_account_from_private_key(self, label, password, private_key):
         """
         This interface is used to create account by providing an encrypted private key and it's decrypt password.
 
         :param label: a label for account.
+        :type label: basestring
         :param password: a password which is used to decrypt the encrypted private key.
+        :type password: basestring
         :param private_key: a private key in the form of string.
-        :return: if succeed, return an AccountData object.
-                  if failed, return a None object.
+        :type private_key: basestring
+        :return: AccountData | None
         """
         salt = get_random_str(16)
         info = self.create_account_info(label, password, salt, private_key)
@@ -255,11 +316,13 @@ class WalletManager(object):
                 return self.wallet_in_mem.accounts[index]
         return None
 
-    def get_account(self, b58_address_or_ontid: str, password: str) -> Account or None:
+    def get_account(self, b58_address_or_ontid, password):
         """
         :param b58_address_or_ontid: a base58 encode address or ontid
+        :type b58_address_or_ontid: basestring
         :param password: a password which is used to decrypt the encrypted private key.
-        :return:
+        :type address: basestring
+        :return: Account | None
         """
         if b58_address_or_ontid.startswith(DID_ONT):
             for index in range(len(self.wallet_in_mem.identities)):
@@ -280,17 +343,21 @@ class WalletManager(object):
                     return Account(private_key, self.scheme)
         return None
 
-    def get_default_identity(self) -> Identity:
+    def get_default_identity(self):
+        """
+
+        :return: Identity
+        """
         for identity in self.wallet_in_mem.identities:
             if identity.is_default:
                 return identity
         raise SDKException(ErrorCode.param_error)
 
-    def get_default_account(self) -> AccountData:
+    def get_default_account(self):
         """
         This interface is used to get the default account in WalletManager.
 
-        :return: an AccountData object that contain all the information of a default account.
+        :return: AccountData
         """
         for acct in self.wallet_in_mem.accounts:
             if acct.is_default:

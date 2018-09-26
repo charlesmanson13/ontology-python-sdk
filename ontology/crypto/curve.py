@@ -13,8 +13,14 @@ class Curve(Enum):
     P521 = ec.SECP521R1()
 
     @staticmethod
-    def from_label(label: int):
-        label = bytes([label])
+    def from_label(label):
+        """
+
+        :param label:
+        :type label: int
+        :return:
+        """
+        label = chr(label)
         if Curve.P224.value == label:
             return Curve.P224.name
         elif Curve.P256.value == label:

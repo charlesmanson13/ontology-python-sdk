@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #  Constants
 PUSH0 = b'\x00'  # An empty array of bytes is pushed onto the stack.
 PUSHF = PUSH0

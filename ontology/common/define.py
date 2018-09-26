@@ -1,8 +1,8 @@
 from binascii import a2b_hex
 
-VERSION_TRANSACTION = bytes([0])
-VERSION_CONTRACT_ONT = bytes([0])
-VERSION_CONTRACT_ONG = bytes([0])
+VERSION_TRANSACTION = chr(0)
+VERSION_CONTRACT_ONT = chr(0)
+VERSION_CONTRACT_ONG = chr(0)
 
 NATIVE_TRANSFER = "transfer"
 NATIVE_TRANSFER_FROM = "transferFrom"

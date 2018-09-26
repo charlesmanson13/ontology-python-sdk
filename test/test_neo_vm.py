@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import struct
 import unittest
 
 from ontology.ont_sdk import OntologySdk
@@ -32,8 +33,8 @@ class TestNeoVm(unittest.TestCase):
         self.assertEqual(num_dec.bit_length(), bit_length)
         num_hex_str_little = '40cd0cbcd779e001'
         num_hex_str_big = '01e079d7bc0ccd40'
-        self.assertEqual(num_hex_str_little, num_dec.to_bytes(8, 'little').hex())
-        self.assertEqual(num_hex_str_big, num_dec.to_bytes(8, 'big').hex())
+        self.assertEqual(num_hex_str_little, struct.pack('<q', num_dec).encode('hex'))
+        self.assertEqual(num_hex_str_big, struct.pack('>q', num_dec).encode('hex'))
 
     def test_get_balance(self):
         sdk.set_rpc(rpc_address)

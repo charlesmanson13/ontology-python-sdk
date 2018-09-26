@@ -24,7 +24,11 @@ class Transaction(object):
         self.sigs = sigs  # Sig class array
         self.hash = hash  # 32 bytes
 
-    def serialize_unsigned(self) -> bytes:
+    def serialize_unsigned(self):
+        """
+
+        :return: bytes
+        """
         ms = StreamManager.GetStream()
         writer = BinaryWriter(ms)
         writer.write_uint8(self.version)
@@ -45,7 +49,11 @@ class Transaction(object):
     def serialize_exclusive_data(self, writer):
         pass
 
-    def hash256_explorer(self) -> str:
+    def hash256_explorer(self):
+        """
+
+        :return: str
+        """
         tx_serial = self.serialize_unsigned()
         tx_serial = a2b_hex(tx_serial)
         digest = Digest.hash256(tx_serial)
@@ -54,7 +62,11 @@ class Transaction(object):
         else:
             return ''
 
-    def hash256_bytes(self) -> bytes:
+    def hash256_bytes(self):
+        """
+
+        :return: bytes
+        """
         tx_serial = self.serialize_unsigned()
         tx_serial = a2b_hex(tx_serial)
         r = Digest.hash256(tx_serial, False)
@@ -63,7 +75,11 @@ class Transaction(object):
         else:
             raise RuntimeError
 
-    def hash256_hex(self) -> str:
+    def hash256_hex(self):
+        """
+
+        :return: str
+        """
         tx_serial = self.serialize_unsigned()
         tx_serial = a2b_hex(tx_serial)
         r = Digest.hash256(tx_serial, True)
@@ -72,7 +88,13 @@ class Transaction(object):
         else:
             raise RuntimeError
 
-    def serialize(self, is_hex: bool = False) -> bytes:
+    def serialize(self, is_hex=False):
+        """
+
+        :param is_hex:
+        :type is_hex: bool
+        :return: bytes
+        """
         ms = StreamManager.GetStream()
         writer = BinaryWriter(ms)
         writer.write_bytes(self.serialize_unsigned())
@@ -88,7 +110,13 @@ class Transaction(object):
             return a2b_hex(temp)
 
     @staticmethod
-    def deserialize_from(txbytes: bytes):
+    def deserialize_from(txbytes):
+        """
+
+        :param txbytes:
+        :type txbytes: bytes
+        :return:
+        """
         ms = StreamManager.GetStream(txbytes)
         reader = BinaryReader(ms)
         tx = Transaction()

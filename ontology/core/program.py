@@ -35,8 +35,8 @@ class ProgramBuilder(object):
         writer = BinaryWriter(ms)
         if len(data) == 0:
             raise ValueError("push data error: data is null")
-        if len(data) <= int.from_bytes(PUSHBYTES75, 'little') + 1 - int.from_bytes(PUSHBYTES1, 'little'):
-            num = len(data) + int.from_bytes(PUSHBYTES1, 'little') - 1
+        if len(data) <= ord(PUSHBYTES75) + 1 - ord(PUSHBYTES1):
+            num = len(data) + ord(PUSHBYTES1) - 1
             writer.write_byte(num)
         elif len(data) < 0x100:
             writer.write_byte(PUSHDATA1)
@@ -55,20 +55,26 @@ class ProgramBuilder(object):
         return res
 
     @staticmethod
-    def read_bytes(reader: BinaryReader):
+    def read_bytes(reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
         code = reader.read_byte()
         key_len = 0
-        if code == int.from_bytes(PUSHDATA4, 'little'):
+        if code == ord(PUSHDATA4):
             temp = reader.read_uint32()
             key_len = temp
-        elif code == int.from_bytes(PUSHDATA2, 'little'):
+        elif code == ord(PUSHDATA2):
             temp = reader.read_uint16()
             key_len = int(temp)
-        elif code == int.from_bytes(PUSHDATA1, 'little'):
+        elif code == ord(PUSHDATA1):
             temp = reader.read_uint8()
             key_len = int(temp)
-        elif code <= int.from_bytes(PUSHBYTES75, 'little') and code >= int.from_bytes(PUSHBYTES1, 'little'):
-            key_len = code - int.from_bytes(PUSHBYTES1, 'little') + 1
+        elif ord(PUSHBYTES1) <= code <= ord(PUSHBYTES75):
+            key_len = code - ord(PUSHBYTES1) + 1
         else:
             key_len = 0
         res = reader.read_bytes(key_len)
@@ -85,11 +91,25 @@ class ProgramBuilder(object):
             return str(o1)
 
     @staticmethod
-    def sort_publickeys(publicKeys: []):
+    def sort_publickeys(publicKeys):
+        """
+
+        :param publicKeys:
+        :type publicKeys: list
+        :return:
+        """
         return sorted(publicKeys, key=ProgramBuilder.compare_pubkey)
 
     @staticmethod
-    def program_from_multi_pubkey(m: int, pubkeys: []):
+    def program_from_multi_pubkey(m, pubkeys):
+        """
+
+        :param m:
+        :type m: int
+        :param pubkeys:
+        :type pubkeys: list
+        :return:
+        """
         n = len(pubkeys)
         if m <= 0 or m > n or n > define.MULTI_SIG_MAX_PUBKEY_SIZE:
             raise Exception("param error")
@@ -103,7 +123,13 @@ class ProgramBuilder(object):
         return builder.to_array()
 
     @staticmethod
-    def get_param_info(program: bytes):
+    def get_param_info(program):
+        """
+
+        :param program:
+        :type program: bytes
+        :return: list
+        """
         ms = StreamManager.GetStream(program)
         reader = BinaryReader(ms)
         list = []
@@ -116,20 +142,26 @@ class ProgramBuilder(object):
         return list
 
     @staticmethod
-    def get_program_info(program: bytes) -> ProgramInfo:
+    def get_program_info(program):
+        """
+
+        :param program:
+        :type program: bytes
+        :return: ProgramInfo
+        """
         length = len(program)
         end = program[length - 1]
         temp = program[:length - 1]
         ms = StreamManager.GetStream(temp)
         reader = BinaryReader(ms)
         info = ProgramInfo()
-        if end == int.from_bytes(CHECKSIG, 'little'):
+        if end == ord(CHECKSIG):
             pubkeys = ProgramBuilder.read_bytes(reader)
             info.set_pubkey([pubkeys])
             info.set_m(1)
-        elif end == int.from_bytes(CHECKMULTISIG, 'little'):
-            length = program[len(program) - 2] - int.from_bytes(PUSH1, 'little')
-            m = reader.read_byte() - int.from_bytes(PUSH1, 'little') + 1
+        elif end == ord(CHECKMULTISIG):
+            length = program[len(program) - 2] - ord(PUSH1)
+            m = reader.read_byte() - ord(PUSH1) + 1
             pub = []
             for i in range(length):
                 pub.append(reader.read_var_bytes())

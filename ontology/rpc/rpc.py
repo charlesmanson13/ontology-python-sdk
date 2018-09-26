@@ -52,12 +52,13 @@ class RpcClient(object):
             JsonRpcRequest["params"] = param
         return JsonRpcRequest
 
-    def get_version(self) -> str:
+    def get_version(self):
         """
         This interface is used to get the version information of the connected node in current network.
 
         Return:
             the version information of the connected node.
+        :return: basestring
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_VERSION, [])
@@ -70,12 +71,13 @@ class RpcClient(object):
         version = json.loads(response.content.decode())["result"]
         return version
 
-    def get_node_count(self) -> int:
+    def get_node_count(self):
         """
         This interface is used to get the current number of connections for the node in current network.
 
         Return:
             the number of connections.
+        :return: int
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_NODE_COUNT, [])
@@ -88,12 +90,13 @@ class RpcClient(object):
         count = json.loads(response.content.decode())["result"]
         return count
 
-    def get_gas_price(self) -> int:
+    def get_gas_price(self):
         """
         This interface is used to get the gas price in current network.
 
         Return:
             the value of gas price.
+        :return: int
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_GAS_PRICE, [])
@@ -106,12 +109,13 @@ class RpcClient(object):
         price = json.loads(response.content.decode())["result"]['gasprice']
         return price
 
-    def get_network_id(self) -> int:
+    def get_network_id(self):
         """
         This interface is used to get the network id of current network.
 
         Return:
             the network id of current network.
+        :return: int
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_NETWORK_ID, [])
@@ -124,7 +128,7 @@ class RpcClient(object):
         id = json.loads(response.content.decode())["result"]
         return id
 
-    def get_block_by_hash(self, block_hash: str) -> dict:
+    def get_block_by_hash(self, block_hash):
         """
         This interface is used to get the hexadecimal hash value of specified block height in current network.
 
@@ -132,8 +136,12 @@ class RpcClient(object):
          block_hash (str):
             a hexadecimal value of block hash
 
+        :param block_hash:
+        :type block_hash: basestring
+
         Return:
             the block information of the specified block hash.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_BLOCK, [block_hash, 1])
@@ -146,12 +154,16 @@ class RpcClient(object):
         dict_block = json.loads(response.content.decode())["result"]
         return dict_block
 
-    def get_block_by_height(self, height: int) -> dict:
+    def get_block_by_height(self, height):
         """
         This interface is used to get the block information by block height in current network.
 
+        :param height:
+        :type height: int
+
         Return:
             the decimal total number of blocks in current network.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_BLOCK, [height, 1])
@@ -164,12 +176,13 @@ class RpcClient(object):
         block = json.loads(response.content.decode())["result"]
         return block
 
-    def get_block_count(self) -> int:
+    def get_block_count(self):
         """
         This interface is used to get the decimal block number in current network.
 
         Return:
             the decimal total number of blocks in current network.
+        :return: int
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_BLOCK_COUNT)
@@ -182,12 +195,13 @@ class RpcClient(object):
         count = json.loads(response.content.decode())["result"]
         return count
 
-    def get_current_block_hash(self) -> str:
+    def get_current_block_hash(self):
         """
         This interface is used to get the hexadecimal hash value of the highest block in current network.
 
         Return:
             the hexadecimal hash value of the highest block in current network.
+        :return: basestring
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_CURRENT_BLOCK_HASH)
@@ -200,16 +214,18 @@ class RpcClient(object):
         res = json.loads(response.content.decode())["result"]
         return res
 
-    def get_block_hash_by_height(self, height: int) -> str:
+    def get_block_hash_by_height(self, height):
         """
         This interface is used to get the hexadecimal hash value of specified block height in current network.
 
         Args:
          height (int):
             a decimal block height value
+        :param height: int
 
         Return:
             the hexadecimal hash value of the specified block height.
+        :return: basestring
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_BLOCK_HASH, [height, 1])
@@ -222,16 +238,19 @@ class RpcClient(object):
         block_hash = json.loads(response.content.decode())["result"]
         return block_hash
 
-    def get_balance(self, base58_address: str) -> dict:
+    def get_balance(self, base58_address):
         """
         This interface is used to get the account balance of specified base58 encoded address in current network.
 
         Args:
          base58_address (str):
             a base58 encoded account address
+        :param base58_address:
+        :type base58_address: basestring
 
         Return:
             the value of account balance in dictionary form.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_BALANCE, [base58_address, 1])
@@ -244,7 +263,7 @@ class RpcClient(object):
         balance = json.loads(response.content.decode())["result"]
         return balance
 
-    def get_allowance(self, asset_name: str, from_address: str, to_address: str) -> str:
+    def get_allowance(self, asset_name, from_address, to_address):
         """
         This interface is used to get the the allowance
         from transfer-from account to transfer-to account in current network.
@@ -252,9 +271,16 @@ class RpcClient(object):
         Args:
          from_address (str):
             a base58 encoded account address
+        :param asset_name:
+        :type asset_name: basestring
+        :param from_address:
+        :type from_address: basestring
+        :param to_address:
+        :type to_address: basestring
 
         Return:
             the information of allowance in dictionary form.
+        :return: basestring
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_ALLOWANCE, [asset_name, from_address, to_address])
@@ -267,7 +293,7 @@ class RpcClient(object):
         allowance = json.loads(response.content.decode())["result"]
         return allowance
 
-    def get_storage(self, contract_address: str, key: str) -> int:
+    def get_storage(self, contract_address, key):
         """
         This interface is used to get the corresponding stored value
         based on hexadecimal contract address and stored key.
@@ -277,9 +303,14 @@ class RpcClient(object):
             hexadecimal contract address
          key (str):
             a hexadecimal stored key
+        :param contract_address:
+        :type contract_address: basestring
+        :param key:
+        :type key: basestring
 
         Return:
             the information of smart contract event in dictionary form.
+        :return: int
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_STORAGE, [contract_address, key, 1])
@@ -295,16 +326,19 @@ class RpcClient(object):
         #     s[7]) << 56
         return s
 
-    def get_smart_contract_event_by_tx_hash(self, tx_hash: str) -> dict:
+    def get_smart_contract_event_by_tx_hash(self, tx_hash):
         """
         This interface is used to get the corresponding smart contract event based on the height of block.
 
         Args:
          tx_hash (str):
             a hexadecimal hash value
+        :param tx_hash:
+        :type tx_hash: basestring
 
         Return:
             the information of smart contract event in dictionary form.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_SMART_CONTRACT_EVENT, [tx_hash, 1])
@@ -317,16 +351,19 @@ class RpcClient(object):
         event = json.loads(response.content.decode())["result"]
         return event
 
-    def get_smart_contract_event_by_height(self, height: int) -> dict:
+    def get_smart_contract_event_by_height(self, height):
         """
         This interface is used to get the corresponding smart contract event based on the height of block.
 
         Args:
          height (int):
             a decimal height value.
+        :param height:
+        :type height: int
 
         Return:
             the information of smart contract event in dictionary form.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_SMART_CONTRACT_EVENT, [height, 1])
@@ -339,11 +376,12 @@ class RpcClient(object):
         event = json.loads(response.content.decode())["result"]
         return event
 
-    def get_raw_transaction(self, tx_hash: str) -> dict:
+    def get_raw_transaction(self, tx_hash):
         """
         This interface is used to get the corresponding transaction information based on the specified hash value.
 
         :param tx_hash: str, a hexadecimal hash value.
+        :type tx_hash: basestring
         :return: dict
         """
         payload = RpcClient.set_json_rpc_version(RPC_GET_TRANSACTION, [tx_hash, 1])
@@ -356,12 +394,13 @@ class RpcClient(object):
         tx = json.loads(response.content.decode())["result"]
         return tx
 
-    def get_smart_contract(self, contract_address: str) -> dict:
+    def get_smart_contract(self, contract_address):
         """
         This interface is used to get the information of smart contract based on the specified hexadecimal hash value.
 
         :param contract_address: str, a hexadecimal hash value.
-        :return: the information of smart contract in dictionary form.
+        :type contract_address: basestring
+        :return: dict the information of smart contract in dictionary form.
         """
         if type(contract_address) != str:
             raise SDKException(ErrorCode.param_err('a hexadecimal contract address is required.'))
@@ -377,16 +416,19 @@ class RpcClient(object):
         contract = json.loads(response.content.decode())["result"]
         return contract
 
-    def get_merkle_proof(self, tx_hash: str) -> dict:
+    def get_merkle_proof(self, tx_hash):
         """
         This interface is used to get the corresponding merkle proof based on the specified hexadecimal hash value.
 
         Args:
          tx_hash (str):
             an hexadecimal transaction hash value.
+        :param tx_hash:
+        :type tx_hash: basestring
 
         Return:
             the merkle proof in dictionary form.
+        :return: dict
         """
 
         payload = RpcClient.set_json_rpc_version(RPC_GET_MERKLE_PROOF, [tx_hash, 1])
@@ -399,20 +441,23 @@ class RpcClient(object):
         proof = json.loads(response.content.decode())["result"]
         return proof
 
-    def send_raw_transaction(self, tx: Transaction) -> str:
+    def send_raw_transaction(self, tx):
         """
         This interface is used to send the transaction into the network.
 
         Args:
          tx (Transaction):
             Transaction object in ontology Python SDK.
+        :param tx:
+        :type tx: Transaction
 
         Return:
             a hexadecimal transaction hash value.
+        :return: basestring
         """
 
         buf = tx.serialize()
-        tx_data = buf.hex()
+        tx_data = buf.encode('hex')
         payload = RpcClient.set_json_rpc_version(RPC_SEND_TRANSACTION, [tx_data])
         try:
             response = HttpRequest.request("post", self.addr, payload)
@@ -426,20 +471,22 @@ class RpcClient(object):
             raise SDKException(ErrorCode.other_error(res))
         return res
 
-    def send_raw_transaction_pre_exec(self, tx: Transaction):
+    def send_raw_transaction_pre_exec(self, tx):
         """
         This interface is used to send the transaction that is prepare to execute.
 
         Args:
          tx (Transaction):
             Transaction object in ontology Python SDK.
+        :param tx:
+        :type tx: Transaction
 
         Return:
             the execution result of transaction that is prepare to execute.
         """
 
         buf = tx.serialize()
-        tx_data = buf.hex()
+        tx_data = buf.encode('hex')
         payload = RpcClient.set_json_rpc_version(RPC_SEND_TRANSACTION, [tx_data, 1])
         try:
             response = HttpRequest.request("post", self.addr, payload)

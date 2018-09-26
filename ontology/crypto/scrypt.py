@@ -28,7 +28,13 @@ class Scrypt:
         for key, value in data.items():
             yield (key, value)
 
-    def set_dk_len(self, dk_len: int):
+    def set_dk_len(self, dk_len):
+        """
+
+        :param dk_len:
+        :type dk_len: int
+        :return:
+        """
         self.dkLen = dk_len
 
     def get_dk_len(self):
@@ -40,7 +46,13 @@ class Scrypt:
     def get_n(self):
         return self.n
 
-    def set_r(self, r: int):
+    def set_r(self, r):
+        """
+
+        :param r:
+        :type r: int
+        :return:
+        """
         self.r = r
 
     def get_r(self):
@@ -52,6 +64,14 @@ class Scrypt:
     def get_p(self):
         return self.p
 
-    def generate_kd(self, password: str, salt: str):
+    def generate_kd(self, password, salt):
+        """
+
+        :param password:
+        :type password: basestring
+        :param salt:
+        :type salt: basestring
+        :return:
+        """
         dk = KDF.scrypt(password, salt, self.dkLen, self.n, self.r, self.p)
         return dk

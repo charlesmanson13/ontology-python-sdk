@@ -23,7 +23,7 @@ class TestAccount(unittest.TestCase):
         self.assertEqual(clone_wallet.__dict__['default_ont_id'], ont_id)
 
     def test_export_gcm_encrypted_private_key(self):
-        private_key = util.get_random_bytes(32).hex()
+        private_key = util.get_random_bytes(32).encode('hex')
         account = Account(private_key, SignatureScheme.SHA256withECDSA)
         b58_address = account.get_address_base58()
         salt = util.get_random_str(16)
@@ -45,12 +45,12 @@ class TestAccount(unittest.TestCase):
         account = Account(raw_hex_data, SignatureScheme.SHA256withECDSA)
         data = account.generate_signature(bytes("test".encode()), SignatureScheme.SHA256withECDSA)
         # TODO: add verify signature
-        # print(data.hex())
+        # print(data.encode('hex'))
 
     def test_serialize_private_key(self):
         hex_private_key = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
         account = Account(hex_private_key, SignatureScheme.SHA256withECDSA)
-        hex_serialize_private_key = account.serialize_private_key().hex()
+        hex_serialize_private_key = account.serialize_private_key().encode('hex')
         self.assertEqual(hex_private_key, hex_serialize_private_key)
 
     def test_get_address_base58(self):
@@ -81,7 +81,7 @@ class TestAccount(unittest.TestCase):
         hex_private_key = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
         hex_public_key = "03036c12be3726eb283d078dff481175e96224f0b0c632c7a37e10eb40fe6be889"
         account = Account(hex_private_key, SignatureScheme.SHA256withECDSA)
-        self.assertEqual(hex_public_key, account.serialize_public_key().hex())
+        self.assertEqual(hex_public_key, account.serialize_public_key().encode('hex'))
 
     def test_export_wif(self):
         private_key = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
@@ -92,7 +92,7 @@ class TestAccount(unittest.TestCase):
     def test_get_private_key_from_wif(self):
         private_key = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
         wif = 'KyyZpJYXRfW8CXxH2B6FRq5AJsyTH7PjPACgBht4xRjstz4mxkeJ'
-        self.assertEqual(private_key, Account.get_private_key_from_wif(wif).hex())
+        self.assertEqual(private_key, Account.get_private_key_from_wif(wif).encode('hex'))
 
 
 if __name__ == '__main__':

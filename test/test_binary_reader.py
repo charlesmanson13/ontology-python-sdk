@@ -14,7 +14,7 @@ class TestBinaryReader(unittest.TestCase):
         writer_stream = StreamManager.GetStream()
         writer = BinaryWriter(writer_stream)
         writer.write_var_int(value)
-        reader_stream = StreamManager.GetStream(writer_stream.getbuffer())
+        reader_stream = StreamManager.GetStream(writer_stream.getvalue())
         reader = BinaryReader(reader_stream)
         self.assertEqual(reader.read_var_int(), value)
 

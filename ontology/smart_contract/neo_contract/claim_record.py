@@ -15,8 +15,23 @@ class ClaimRecord(object):
         self.contract_address = "36bb5c053b6b839c8f6b923fe852f91239b9fccc"
         self.abi = '{"hash":"0x36bb5c053b6b839c8f6b923fe852f91239b9fccc","entrypoint":"Main","functions":[{"name":"Main","parameters":[{"name":"operation","type":"String"},{"name":"args","type":"Array"}],"returntype":"Any"},{"name":"Commit","parameters":[{"name":"claimId","type":"ByteArray"},{"name":"commiterId","type":"ByteArray"},{"name":"ownerId","type":"ByteArray"}],"returntype":"Boolean"},{"name":"Revoke","parameters":[{"name":"claimId","type":"ByteArray"},{"name":"ontId","type":"ByteArray"}],"returntype":"Boolean"},{"name":"GetStatus","parameters":[{"name":"claimId","type":"ByteArray"}],"returntype":"ByteArray"}],"events":[{"name":"ErrorMsg","parameters":[{"name":"id","type":"ByteArray"},{"name":"error","type":"String"}],"returntype":"Void"},{"name":"Push","parameters":[{"name":"id","type":"ByteArray"},{"name":"msg","type":"String"},{"name":"args","type":"ByteArray"}],"returntype":"Void"}]}'
 
-    def make_commit(self, issuerOntid: str, subjectOntid: str, claimId: str, payer: str,
-                    gas_limit: int, gas_price: int):
+    def make_commit(self, issuerOntid, subjectOntid, claimId, payer, gas_limit, gas_price):
+        """
+
+        :param issuerOntid:
+        :type issuerOntid: basestring
+        :param subjectOntid:
+        :type subjectOntid: basestring
+        :param claimId:
+        :type claimId: basestring
+        :param payer:
+        :type payer: basestring
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         # TODO
         abi = json.loads(self.abi, object_hook=lambda d: namedtuple('X', d.keys())(*d.values()))
         abi_info = AbiInfo(abi.hash, abi.entrypoint, abi.functions, abi.events)

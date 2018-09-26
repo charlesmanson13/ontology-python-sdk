@@ -16,7 +16,13 @@ class DeployTransaction(Transaction):
         self.description = description
         self.tx_type = 0xd0
 
-    def serialize_exclusive_data(self, writer: BinaryWriter):
+    def serialize_exclusive_data(self, writer):
+        """
+
+        :param writer:
+        :type writer: BinaryWriter
+        :return:
+        """
         writer.write_var_bytes(self.code)
         writer.write_bool(self.need_storage)
         writer.write_var_str(self.name)

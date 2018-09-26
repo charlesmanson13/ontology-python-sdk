@@ -27,8 +27,25 @@ class NeoVm(object):
     def claim_record(self):
         return ClaimRecord(self.__sdk)
 
-    def send_transaction(self, contract_address: bytes or bytearray, acct: Account, payer_acct: Account, gas_limit: int,
-                         gas_price: int, func: AbiFunction, pre_exec: bool):
+    def send_transaction(self, contract_address, acct, payer_acct, gas_limit, gas_price, func, pre_exec):
+        """
+
+        :param contract_address:
+        :type contract_address: bytes | bytearray
+        :param acct:
+        :type acct: Account
+        :param payer_acct:
+        :type payer_acct: Account
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :param func:
+        :type func: AbiFunction
+        :param pre_exec:
+        :type pre_exec: bool
+        :return:
+        """
         if func is not None:
             params = BuildParams.serialize_abi_function(func)
         else:
@@ -58,8 +75,31 @@ class NeoVm(object):
             return self.__sdk.rpc.send_raw_transaction(tx)
 
     @staticmethod
-    def make_deploy_transaction(code_str: str, need_storage: bool, name: str, code_version: str, author: str,
-                                email: str, desp: str, payer: str, gas_limit: int, gas_price: int):
+    def make_deploy_transaction(code_str, need_storage, name, code_version, author, email, desp, payer, gas_limit, gas_price):
+        """
+
+        :param code_str:
+        :type code_str: basestring
+        :param need_storage:
+        :type need_storage: bool
+        :param name:
+        :type name: basestring
+        :param code_version:
+        :type code_version: basestring
+        :param author:
+        :type author: basestring
+        :param email:
+        :type email: basestring
+        :param desp:
+        :type desp: basestring
+        :param payer:
+        :type payer: basestring
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         unix_time_now = int(time())
         deploy_tx = DeployTransaction()
         deploy_tx.payer = Address.b58decode(payer).to_array()
@@ -78,8 +118,21 @@ class NeoVm(object):
         return deploy_tx
 
     @staticmethod
-    def make_invoke_transaction(code_address: bytearray, params: bytearray, payer: bytes, gas_limit: int,
-                                gas_price: int):
+    def make_invoke_transaction(code_address, params, payer, gas_limit, gas_price):
+        """
+
+        :param code_address:
+        :type code_address: bytearray
+        :param params:
+        :type params: bytearray
+        :param payer:
+        :type payer: bytes
+        :param gas_limit:
+        :type gas_limit: int
+        :param gas_price:
+        :type gas_price: int
+        :return:
+        """
         params += bytearray([0x67])
         params += code_address
         invoke_tx = InvokeTransaction()

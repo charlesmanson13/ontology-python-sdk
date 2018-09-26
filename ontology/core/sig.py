@@ -14,7 +14,11 @@ class Sig(object):
         self.M = M
         self.sig_data = sig_data
 
-    def serialize(self) -> bytes:
+    def serialize(self):
+        """
+
+        :return: str
+        """
         invoke_script = ProgramBuilder.program_from_params(self.sig_data)
         if len(self.public_keys) == 0:
             raise ValueError("no public key in sig")
@@ -34,13 +38,25 @@ class Sig(object):
         return res
 
     @staticmethod
-    def deserialize_from(sigbytes: bytes):
+    def deserialize_from(sigbytes):
+        """
+
+        :param sigbytes:
+        :type sigbytes: str
+        :return:
+        """
         ms = StreamManager.GetStream(sigbytes)
         reader = BinaryReader(ms)
         return Sig.deserialize(reader)
 
     @staticmethod
-    def deserialize(reader: BinaryReader):
+    def deserialize(reader):
+        """
+
+        :param reader:
+        :type reader: BinaryReader
+        :return:
+        """
 
         invocation_script = reader.read_var_bytes()
         verification_script = reader.read_var_bytes()

@@ -15,7 +15,13 @@ class BuildParams(object):
         maptype = 0x82
 
     @staticmethod
-    def serialize_abi_function(abi_func: AbiFunction):
+    def serialize_abi_function(abi_func):
+        """
+
+        :param abi_func:
+        :type abi_func: AbiFunction
+        :return:
+        """
         param_list = list()
         param_list.append(bytes(abi_func.name.encode()))
         temp_list = list()
@@ -32,7 +38,13 @@ class BuildParams(object):
         return BuildParams.create_code_params_script(param_list)
 
     @staticmethod
-    def create_code_params_script(param_list: []) -> bytearray:
+    def create_code_params_script(param_list):
+        """
+
+        :param param_list:
+        :type param_list: list
+        :return: bytearray
+        """
         builder = ParamsBuilder()
         length = len(param_list)
         for j in range(length):
@@ -54,7 +66,15 @@ class BuildParams(object):
         return bytearray(builder.to_array())
 
     @staticmethod
-    def create_code_params_script_builder(param_list: list, builder: ParamsBuilder):
+    def create_code_params_script_builder(param_list, builder):
+        """
+
+        :param param_list:
+        :type param_list: list
+        :param builder:
+        :type builder: ParamsBuilder
+        :return:
+        """
         length = len(param_list)
         for j in range(length):
             i = length - 1 - j
@@ -75,7 +95,13 @@ class BuildParams(object):
         return builder.to_array()
 
     @staticmethod
-    def get_map_bytes(param_dict: dict):
+    def get_map_bytes(param_dict):
+        """
+
+        :param param_dict:
+        :type param_dict: dict
+        :return:
+        """
         builder = ParamsBuilder()
         builder.emit(BuildParams.Type.maptype.value)
         builder.emit(util.bigint_to_neo_bytes(len(param_dict)))

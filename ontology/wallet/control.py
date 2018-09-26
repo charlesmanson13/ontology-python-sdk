@@ -5,6 +5,18 @@
 class Control(object):
     def __init__(self, id="", address='', enc_alg="aes-256-gcm", key="", algorithm='ECDSA', salt="", param=None,
                  hash_value="sha256", public_key=""):
+        """
+
+        :param id:
+        :param address:
+        :param enc_alg:
+        :param key:
+        :param algorithm:
+        :param salt:
+        :param param:
+        :param hash_value:
+        :param public_key:
+        """
         if param is None:
             param = {"curve": "P-256"}
         self.address = address
@@ -32,7 +44,13 @@ class Control(object):
             yield (key, value)
 
     @staticmethod
-    def dict2obj(control_data: dict):
+    def dict2obj(control_data):
+        """
+
+        :param control_data:
+        :type control_data: dict
+        :return:
+        """
         obj = Control(id=control_data['id'], address=control_data['address'], enc_alg=control_data['enc-alg'],
                       key=control_data['key'], algorithm=control_data['algorithm'], salt=control_data['salt'],
                       param=control_data['parameters'], hash_value=control_data['hash'],

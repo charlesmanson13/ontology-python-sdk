@@ -20,12 +20,12 @@ class TestGovernance(unittest.TestCase):
         if identities is None or len(identities) == 0:
             identity = sdk.wallet_manager.create_identity("sss", password)
             account = sdk.wallet_manager.get_account(identity.ont_id, password)
-            tx = sdk.native_vm().ont_id().new_registry_ont_id_transaction(identity.ont_id, account.serialize_public_key().hex(),
+            tx = sdk.native_vm().ont_id().new_registry_ont_id_transaction(identity.ont_id, account.serialize_public_key().encode('hex'),
                                                                     account.get_address_base58(), 20000, 0)
             sdk.sign_transaction(tx, account)
             res = sdk.rpc.send_raw_transaction(tx)
             print("res:", res)
-            print("txhash:", tx.hash256_bytes().hex())
+            print("txhash:", tx.hash256_bytes().encode('hex'))
             sdk.wallet_manager.write_wallet()
             time.sleep(6)
             tx2 = sdk.native_vm().ont_id().new_get_ddo_transaction(identity.ont_id)
@@ -68,9 +68,6 @@ class TestGovernance(unittest.TestCase):
     def test_get_authorize_info(self):
         res = sdk.native_vm().governance().get_authorize_info(peer_publickey, account1.get_address())
         print("res:", res)
-
-    def test_aa(self):
-        print("voteInfoPool".encode().hex())
 
     def test_get_peer_unbind_ong(self):
         sdk.native_vm().governance().get_peer_unbind_ong(account1.get_address_base58())

@@ -5,7 +5,20 @@ did_ont = "did:ont:"
 
 
 class Identity(object):
-    def __init__(self, ont_id: str = "", label: str = "", lock: bool = False, controls: list = None, is_default=False):
+    def __init__(self, ont_id="", label="", lock=False, controls=None, is_default=False):
+        """
+
+        :param ont_id:
+        :type ont_id: basestring
+        :param label:
+        :type label: basestring
+        :param lock:
+        :type lock: bool
+        :param controls:
+        :type controls: list
+        :param is_default:
+        :type is_default: bool
+        """
         if controls is None:
             controls = list()
         self.ont_id = ont_id

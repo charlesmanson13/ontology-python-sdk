@@ -1,17 +1,32 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+import struct
 
 from ontology.utils import util
 from ontology.vm.op_code import *
 from ontology.vm.params_builder import ParamsBuilder
 
 
-def build_native_invoke_code(contract_address: bytearray, version: bytes, method: str, params):
+def build_native_invoke_code(contract_address, version, method, params):
+    """
+
+    :param contract_address:
+    :type contract_address: bytearray
+    :param version:
+    :type version: bytes
+    :param method:
+    :type method: basestring
+    :param params:
+    :return:
+    """
     builder = ParamsBuilder()
     build_neo_vm_param(builder, params)
     builder.emit_push_byte_array(method.encode())
     builder.emit_push_byte_array(contract_address)
-    builder.emit_push_integer(int.from_bytes(version, 'little'))
+    # builder.emit_push_integer(int.from_bytes(version, 'little'))
+    version_bytes = bytearray(version)
+    version_bytes.reverse()
+    builder.emit_push_integer(int(str(version_bytes).encode('hex'), 16))
     builder.emit(SYSCALL)
     builder.emit_push_byte_array("Ontology.Native.Invoke".encode())
     return builder.to_array()
@@ -29,7 +44,7 @@ def build_neo_vm_param(builder, params):
             builder.emit(APPEND)
         builder.emit(FROMALTSTACK)
     elif isinstance(params, str):
-        builder.emit_push_byte_array(params.encode())
+        builder.emit_push_byte_array(params)
         # builder.emit_push_byte_array(util.bytes_reader(params.encode()))
     elif isinstance(params, bytes):
         builder.emit_push_byte_array(params)

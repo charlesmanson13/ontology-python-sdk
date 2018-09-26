@@ -49,7 +49,13 @@ class OntologySdk(object):
             self.wallet_manager = WalletManager()
         return self.wallet_manager
 
-    def set_rpc(self, rpc_addr: str):
+    def set_rpc(self, rpc_addr):
+        """
+
+        :param rpc_addr:
+        :type rpc_addr: basestring
+        :return:
+        """
         self.rpc.set_address(rpc_addr)
 
     def get_rpc(self):
@@ -57,18 +63,26 @@ class OntologySdk(object):
             self.rpc = RpcClient()
         return self.rpc
 
-    def set_signature_scheme(self, scheme: SignatureScheme):
+    def set_signature_scheme(self, scheme):
+        """
+
+        :param scheme:
+        :type scheme: SignatureScheme
+        :return:
+        """
         self.defaultSignScheme = scheme
         self.wallet_manager.set_signature_scheme(scheme)
 
     @staticmethod
-    def sign_transaction(tx: Transaction, signer: Account) -> Transaction:
+    def sign_transaction(tx, signer):
         """
         This interface is used to sign the transaction.
 
         :param tx: a Transaction object which will be signed.
+        :type tx: Transaction
         :param signer: an Account object which will sign the transaction.
-        :return: a Transaction object which has been signed.
+        :type signer: Account
+        :return: Transaction a Transaction object which has been signed.
         """
         tx_hash = tx.hash256_bytes()
         sig_data = signer.generate_signature(tx_hash, signer.get_signature_scheme())
@@ -77,12 +91,14 @@ class OntologySdk(object):
         return tx
 
     @staticmethod
-    def add_sign_transaction(tx: Transaction, signer: Account):
+    def add_sign_transaction(tx, signer):
         """
         This interface is used to add signature into the transaction.
 
         :param tx: a Transaction object which will be signed.
+        :type tx: Transaction
         :param signer: an Account object which will sign the transaction.
+        :type signer: Account
         :return: a Transaction object which has been signed.
         """
         if tx.sigs is None or len(tx.sigs) == 0:
@@ -96,14 +112,18 @@ class OntologySdk(object):
         return tx
 
     @staticmethod
-    def add_multi_sign_transaction(tx: Transaction, m: int, pub_keys: list, signer: Account):
+    def add_multi_sign_transaction(tx, m, pub_keys, signer):
         """
         This interface is used to generate an Transaction object which has multi signature.
 
         :param tx: a Transaction object which will be signed.
+        :type tx: Transaction
         :param m: the amount of signer.
+        :type m: int
         :param pub_keys: a list of public keys.
+        :type pub_keys: list
         :param signer: an Account object which will sign the transaction.
+        :type signer: Account
         :return: a Transaction object which has been signed.
         """
         pub_keys = ProgramBuilder.sort_publickeys(pub_keys)

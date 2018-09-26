@@ -57,7 +57,13 @@ class Oep4(object):
                                                                "returntype": "Void"}]}
         self.__update_abi_info()
 
-    def set_contract_address(self, contract_address: str or bytearray or bytes):
+    def set_contract_address(self, contract_address):
+        """
+
+        :param contract_address:
+        :type contract_address: basestring | bytearray | bytes
+        :return:
+        """
         if len(contract_address) == 20:
             if isinstance(contract_address, bytes):
                 self.__contract_address = bytearray(contract_address)
@@ -85,19 +91,31 @@ class Oep4(object):
             events = list()
         self.__abi_info = AbiInfo(self.get_contract_address(is_hex=True), entry_point, functions, events)
 
-    def __get_token_setting(self, func_name: str) -> str:
+    def __get_token_setting(self, func_name):
+        """
+
+        :param func_name:
+        :type func_name: basestring
+        :return: basestring
+        """
         func = self.__abi_info.get_function(func_name)
         res = self.__sdk.neo_vm().send_transaction(self.__contract_address, None, None, 0, 0, func, True)
         return res
 
     @staticmethod
     def __b58_address_check(b58_address):
-        if not isinstance(b58_address, str):
+        if not isinstance(b58_address, basestring):
             raise SDKException(ErrorCode.param_err('the data type of base58 encode address should be the string.'))
         if len(b58_address) != 34:
             raise SDKException(ErrorCode.param_err('the length of base58 encode address should be 34 bytes.'))
 
-    def get_contract_address(self, is_hex: bool = True) -> str or bytearray:
+    def get_contract_address(self, is_hex=True):
+        """
+
+        :param is_hex:
+        :type is_hex: bool
+        :return: basestring
+        """
         if is_hex:
             array_address = self.__contract_address
             array_address.reverse()
@@ -105,61 +123,69 @@ class Oep4(object):
         else:
             return self.__contract_address
 
-    def get_abi(self) -> dict:
+    def get_abi(self):
+        """
+
+        :return: dict
+        """
         return self.__oep4_abi
 
-    def get_name(self) -> str:
+    def get_name(self):
         """
         This interface is used to call the Name method in ope4
         that return the name of an oep4 token.
 
-        :return: the string name of the oep4 token.
+        :return: basestring the string name of the oep4 token.
         """
         name = self.__get_token_setting('Name')
-        return bytes.fromhex(name).decode()
+        return name.decode('hex')
 
-    def get_symbol(self) -> str:
+    def get_symbol(self):
         """
         This interface is used to call the Symbol method in ope4
         that return the symbol of an oep4 token.
 
-        :return: a short string symbol of the oep4 token
+        :return: basestring a short string symbol of the oep4 token
         """
         get_symbol = self.__get_token_setting('Symbol')
-        return bytes.fromhex(get_symbol).decode()
+        return get_symbol.decode('hex')
 
-    def get_decimal(self) -> int:
+    def get_decimal(self):
         """
         This interface is used to call the Decimal method in ope4
         that return the number of decimals used by the oep4 token.
 
-        :return: the number of decimals used by the oep4 token.
+        :return: int the number of decimals used by the oep4 token.
         """
         decimals = self.__get_token_setting('Decimal')
         return int(decimals[:2], 16)
 
-    def init(self, acct: Account, payer_acct: Account, gas_limit: int, gas_price: int) -> str:
+    def init(self, acct, payer_acct, gas_limit, gas_price):
         """
         This interface is used to call the TotalSupply method in ope4
         that initialize smart contract parameter.
 
         :param acct: an Account class that used to sign the transaction.
+        :type acct: Account
         :param payer_acct: an Account class that used to pay for the transaction.
+        :type payer_acct: Account
         :param gas_limit: an int value that indicate the gas limit.
+        :type gas_limit: int
         :param gas_price: an int value that indicate the gas price.
-        :return: the hexadecimal transaction hash value.
+        :type gas_price: int
+        :return: basestring the hexadecimal transaction hash value.
         """
         func = self.__abi_info.get_function('Init')
         tx_hash = self.__sdk.neo_vm().send_transaction(self.__contract_address, acct, payer_acct, gas_limit, gas_price,
                                                        func, False)
         return tx_hash
 
-    def get_total_supply(self) -> int:
+    def get_total_supply(self):
         """
         This interface is used to call the TotalSupply method in ope4
         that return the total supply of the oep4 token.
 
-        :return: the total supply of the oep4 token.
+        :return: int the total supply of the oep4 token.
         """
         total_supply = self.__get_token_setting('TotalSupply')
         array = bytearray(binascii.a2b_hex(total_supply.encode('ascii')))
@@ -170,13 +196,14 @@ class Oep4(object):
             supply = 0
         return supply
 
-    def balance_of(self, b58_address: str) -> int:
+    def balance_of(self, b58_address):
         """
         This interface is used to call the BalanceOf method in ope4
         that query the ope4 token balance of the given base58 encode address.
 
         :param b58_address: the base58 encode address.
-        :return: the oep4 token balance of the base58 encode address.
+        :type b58_address: basestring
+        :return: int the oep4 token balance of the base58 encode address.
         """
         func = self.__abi_info.get_function('BalanceOf')
         Oep4.__b58_address_check(b58_address)
@@ -191,19 +218,24 @@ class Oep4(object):
             balance = 0
         return balance
 
-    def transfer(self, from_acct: Account, b58_to_address: str, value: int, payer_acct: Account, gas_limit: int,
-                 gas_price: int) -> str:
+    def transfer(self, from_acct, b58_to_address, value, payer_acct, gas_limit, gas_price):
         """
         This interface is used to call the Transfer method in ope4
         that transfer an amount of tokens from one account to another account.
 
         :param from_acct: an Account class that send the oep4 token.
+        :type from_acct: Account
         :param b58_to_address: a base58 encode address that receive the oep4 token.
+        :tyep b58_to_address: basestring
         :param value: an int value that indicate the amount oep4 token that will be transferred in this transaction.
+        :type value: int
         :param payer_acct: an Account class that used to pay for the transaction.
+        :type payer_acct: Account
         :param gas_limit: an int value that indicate the gas limit.
+        :type gas_limit: int
         :param gas_price: an int value that indicate the gas price.
-        :return: the hexadecimal transaction hash value.
+        :type gas_price: int
+        :return: basestring the hexadecimal transaction hash value.
         """
         func = self.__abi_info.get_function('Transfer')
         if not isinstance(value, int):
@@ -221,7 +253,7 @@ class Oep4(object):
                                                        gas_price, func, False)
         return tx_hash
 
-    def transfer_multi(self, args: list, payer_acct: Account, signers: list, gas_limit: int, gas_price: int):
+    def transfer_multi(self, args, payer_acct, signers, gas_limit, gas_price):
         """
         This interface is used to call the TransferMulti method in ope4
         that allow transfer amount of token from multiple from-account to multiple to-account multiple times.
@@ -230,10 +262,15 @@ class Oep4(object):
                 base58 encode transaction sender address,
                 base58 encode transaction receiver address,
                 amount of token in transaction.
+        :type args: list
         :param payer_acct: an Account class that used to pay for the transaction.
+        :type payer_acct: Account
         :param signers: a signer list used to sign this transaction which should contained all sender in args.
+        :type signers: list
         :param gas_limit: an int value that indicate the gas limit.
+        :type gas_limit: int
         :param gas_price: an int value that indicate the gas price.
+        :type gas_price: int
         :return: the hexadecimal transaction hash value.
         """
         func = self.__abi_info.get_function('TransferMulti')
@@ -265,8 +302,7 @@ class Oep4(object):
         tx_hash = self.__sdk.rpc.send_raw_transaction(tx)
         return tx_hash
 
-    def approve(self, owner_acct: Account, b58_spender_address: str, amount: int, payer_acct: Account, gas_limit: int,
-                gas_price: int):
+    def approve(self, owner_acct, b58_spender_address, amount, payer_acct, gas_limit, gas_price):
         """
         This interface is used to call the Approve method in ope4
         that allows spender to withdraw a certain amount of oep4 token from owner account multiple times.
@@ -274,11 +310,17 @@ class Oep4(object):
         If this function is called again, it will overwrite the current allowance with new value.
 
         :param owner_acct: an Account class that indicate the owner.
+        :type owner_acct: Account
         :param b58_spender_address: a base58 encode address that be allowed to spend the oep4 token in owner's account.
+        :type b58_spender_address: basestring
         :param amount: an int value that indicate the amount oep4 token that will be transferred in this transaction.
+        :type amount: int
         :param payer_acct: an Account class that used to pay for the transaction.
+        :type payer_acct: Account
         :param gas_limit: an int value that indicate the gas limit.
+        :type gas_limit: int
         :param gas_price: an int value that indicate the gas price.
+        :type gas_price: int
         :return: the hexadecimal transaction hash value.
         """
         func = self.__abi_info.get_function('Approve')
@@ -295,13 +337,15 @@ class Oep4(object):
                                                        gas_price, func, False)
         return tx_hash
 
-    def allowance(self, b58_owner_address: str, b58_spender_address: str):
+    def allowance(self, b58_owner_address, b58_spender_address):
         """
         This interface is used to call the Allowance method in ope4
         that query the amount of spender still allowed to withdraw from owner account.
 
         :param b58_owner_address: a base58 encode address that represent owner's account.
+        :type b58_owner_address: basestring
         :param b58_spender_address: a base58 encode address that represent spender's account.
+        :type b58_spender_address: basestring
         :return: the amount of oep4 token that owner allow spender to transfer from the owner account.
         """
         func = self.__abi_info.get_function('Allowance')
@@ -319,19 +363,25 @@ class Oep4(object):
             allowance = 0
         return allowance
 
-    def transfer_from(self, spender_acct: Account, from_acct: Account, b58_to_address: str, value: int,
-                      payer_acct: Account, gas_limit: int, gas_price: int):
+    def transfer_from(self, spender_acct, from_acct, b58_to_address, value, payer_acct, gas_limit, gas_price):
         """
         This interface is used to call the Allowance method in ope4
         that allow spender to withdraw amount of oep4 token from from-account to to-account.
 
         :param spender_acct: an Account class that spend the oep4 token.
+        :type spender_acct: Account
         :param from_acct: an Account class that actually pay oep4 token for the spender's spending.
+        :type from_acct: Account
         :param b58_to_address: a base58 encode address that receive the oep4 token.
+        :type b58_to_address: basestring
         :param value: the amount of ope4 token in this transaction.
+        :type value: int
         :param payer_acct: an Account class that used to pay for the transaction.
+        :type payer_acct: Account
         :param gas_limit: an int value that indicate the gas limit.
+        :type gas_limit: int
         :param gas_price: an int value that indicate the gas price.
+        :type gas_price: int
         :return: the hexadecimal transaction hash value.
         """
         func = self.__abi_info.get_function('TransferFrom')

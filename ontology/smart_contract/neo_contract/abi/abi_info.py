@@ -2,7 +2,18 @@ from ontology.smart_contract.neo_contract.abi.abi_function import AbiFunction
 
 
 class AbiInfo(object):
-    def __init__(self, hash_value: str = '', entry_point: str = '', functions: list = None, events: list = None):
+    def __init__(self, hash_value='', entry_point='', functions=None, events=None):
+        """
+        
+        :param hash_value:
+        :type hash_value: basestring 
+        :param entry_point: 
+        :type entry_point: basestring
+        :param functions: 
+        :type functions: list
+        :param events: 
+        :type events: list
+        """
         self.hash = hash_value
         self.entry_point = entry_point
         if functions is None:
@@ -14,12 +25,13 @@ class AbiInfo(object):
         else:
             self.events = events
 
-    def get_function(self, name: str) -> AbiFunction or None:
+    def get_function(self, name):
         """
         This interface is used to get an AbiFunction object from AbiInfo object by given function name.
 
         :param name: the function name in abi file
-        :return: if succeed, an AbiFunction will constructed based on given function name
+        :type name: basestring
+        :return: AbiFunction | None if succeed, an AbiFunction will constructed based on given function name
         """
         for func in self.functions:
             if func['name'] == name:

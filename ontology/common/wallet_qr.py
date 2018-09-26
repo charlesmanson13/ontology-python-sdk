@@ -10,7 +10,14 @@ from ontology.wallet.identity import Identity
 
 class WalletQR(object):
 
-    def export_identity_qrcode(self, wallet_file_or_scrypt, identity: Identity):
+    def export_identity_qrcode(self, wallet_file_or_scrypt, identity):
+        """
+
+        :param wallet_file_or_scrypt:
+        :param identity:
+        :type identity: Identity
+        :return:
+        """
         control = identity.controls[0]
         address = identity.ont_id[8:]
         d = dict()
@@ -28,7 +35,14 @@ class WalletQR(object):
         d["salt"] = control.salt
         return d
 
-    def export_account_qrcode(self, wallet_file_or_scrypt, account: AccountData):
+    def export_account_qrcode(self, wallet_file_or_scrypt, account):
+        """
+
+        :param wallet_file_or_scrypt:
+        :param account:
+        :type account: AccountData
+        :return:
+        """
         d = dict()
         d["type"] = "I"
         d["label"] = account.label
@@ -43,7 +57,15 @@ class WalletQR(object):
         d["salt"] = account.salt
         return d
 
-    def get_prikey_from_qrcode(self, qr_code: str, password: str):
+    def get_prikey_from_qrcode(self, qr_code, password):
+        """
+
+        :param qr_code:
+        :type qr_code: basestring
+        :param password:
+        :type password: basestring
+        :return:
+        """
         d = json.loads(qr_code)
         key = d["key"]
         address = d["address"]
