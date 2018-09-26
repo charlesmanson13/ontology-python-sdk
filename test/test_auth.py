@@ -60,7 +60,7 @@ class TestAuth(unittest.TestCase):
         tx2 = sdk.native_vm().ont_id().new_registry_ont_id_transaction(new_admin_identity.ont_id,
                                                                 new_admin_identity.controls[0].public_key, acc.get_address_base58(), 20000, 0)
         print(new_admin_identity.controls[0].public_key)
-        print(acc3.serialize_public_key().hex())
+        print(acc3.serialize_public_key().encode('hex'))
         sdk.sign_transaction(tx, acc)
         sdk.sign_transaction(tx2, acc)
         account1 = sdk.wallet_manager.get_account(admin_identity.ont_id, "111111")
@@ -92,7 +92,7 @@ class TestAuth(unittest.TestCase):
         contract_address = "bc9795db0abe9d2d9ea565286a237dbf6b407165"
         code_address = bytearray.fromhex(contract_address)
         code_address.reverse()
-        txhash = sdk.native_vm().auth().send_transfer(admin_identity,"111111",1,code_address.hex(),new_admin_identity.ont_id,acc,20000,0)
+        txhash = sdk.native_vm().auth().send_transfer(admin_identity,"111111",1,bytes(code_address).encode('hex'),new_admin_identity.ont_id,acc,20000,0)
         time.sleep(6)
         print(sdk.rpc.get_smart_contract_event_by_tx_hash(txhash))
 
@@ -103,7 +103,7 @@ class TestAuth(unittest.TestCase):
         function_name = list()
         function_name.append("foo")
         function_name.append("foo2")
-        res = sdk.native_vm().auth().assign_funcs_to_role(new_admin_identity,"111111",1,code_address.hex(),"role3",function_name,acc,20000,0)
+        res = sdk.native_vm().auth().assign_funcs_to_role(new_admin_identity,"111111",1,bytes(code_address).encode('hex'),"role3",function_name,acc,20000,0)
         time.sleep(6)
         print(sdk.rpc.get_smart_contract_event_by_tx_hash(res))
 
@@ -113,7 +113,7 @@ class TestAuth(unittest.TestCase):
         code_address.reverse()
         ont_ids = list()
         ont_ids.append(identity.ont_id)
-        res = sdk.native_vm().auth().assign_ont_ids_to_role(new_admin_identity, "111111", 1, code_address.hex(), "role3",
+        res = sdk.native_vm().auth().assign_ont_ids_to_role(new_admin_identity, "111111", 1, bytes(code_address).encode('hex'), "role3",
                                                           ont_ids, acc, 20000, 0)
         time.sleep(6)
         print(sdk.rpc.get_smart_contract_event_by_tx_hash(res))
@@ -122,14 +122,14 @@ class TestAuth(unittest.TestCase):
         contract_address = "bc9795db0abe9d2d9ea565286a237dbf6b407165"
         code_address = bytearray.fromhex(contract_address)
         code_address.reverse()
-        res = sdk.native_vm().auth().verify_token(admin_identity, "111111", 1, code_address.hex(), "foo")
+        res = sdk.native_vm().auth().verify_token(admin_identity, "111111", 1, bytes(code_address).encode('hex'), "foo")
         print("res:", res)
 
     def test_delegate(self):
         contract_address = "bc9795db0abe9d2d9ea565286a237dbf6b407165"
         code_address = bytearray.fromhex(contract_address)
         code_address.reverse()
-        txhash = sdk.native_vm().auth().delegate(identity,"111111",1,code_address.hex(),admin_identity.ont_id,"role",60*5,1,acc,20000,0)
+        txhash = sdk.native_vm().auth().delegate(identity,"111111",1,bytes(code_address).encode('hex'),admin_identity.ont_id,"role",60*5,1,acc,20000,0)
         time.sleep(6)
         print(sdk.rpc.get_smart_contract_event_by_tx_hash(txhash))
 
@@ -137,7 +137,7 @@ class TestAuth(unittest.TestCase):
         contract_address = "bc9795db0abe9d2d9ea565286a237dbf6b407165"
         code_address = bytearray.fromhex(contract_address)
         code_address.reverse()
-        txhash = sdk.native_vm().auth().withdraw(identity, "111111", 1, code_address.hex(), admin_identity.ont_id, "role", acc, 20000, 0)
+        txhash = sdk.native_vm().auth().withdraw(identity, "111111", 1, bytes(code_address).encode('hex'), admin_identity.ont_id, "role", acc, 20000, 0)
         time.sleep(6)
         print(sdk.rpc.get_smart_contract_event_by_tx_hash(txhash))
 
