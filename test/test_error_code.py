@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.common.error_code import ErrorCode
 
 
 class TestErrorCode(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_get_error(self):
         code = 123
         msg = 'test'

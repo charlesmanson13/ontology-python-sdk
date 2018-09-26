@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.utils import util
@@ -8,6 +8,12 @@ from ontology.common.address import Address
 
 
 class TestAddress(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_address_from_vm_code(self):
         code = '54c56b6c766b00527ac46c766b51527ac4616c766b00c36c766b52527ac46c766b52c30548656c6c6f87630600621a' \
                '006c766b51c300c36165230061516c766b53527ac4620e00006c766b53527ac46203006c766b53c3616c756651c56b' \

@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import os
 import struct
 import unittest
 
@@ -26,6 +27,12 @@ acct4 = Account(private_key4, SignatureScheme.SHA256withECDSA)
 
 
 class TestNeoVm(unittest.TestCase):
+
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
 
     def test_big_int(self):
         num_dec = 135241956301000000

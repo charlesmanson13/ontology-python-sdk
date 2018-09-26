@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import random
 import unittest
 
@@ -10,6 +10,12 @@ from ontology.wallet.account import AccountData
 
 
 class TestWalletData(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_init(self):
         wallet = WalletData()
         self.assertTrue(isinstance(wallet, WalletData))

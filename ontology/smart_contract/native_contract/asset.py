@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import binascii
+from collections import OrderedDict
 from time import time
 
 from ontology.utils import util
@@ -82,7 +83,7 @@ class Asset(object):
         contract_address = util.get_asset_address(asset)
         raw_from = Address.b58decode(b58_from_address).to_array()
         raw_to = Address.b58decode(b58_to_address).to_array()
-        args = {"from": raw_from, "to": raw_to}
+        args = OrderedDict([("from", raw_from), ("to", raw_to)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "allowance", args)
         unix_time_now = int(time())
         payer = Address(ZERO_ADDRESS).to_array()
@@ -139,7 +140,7 @@ class Asset(object):
         tx = Transaction(version, tx_type, unix_time_now, gas_price, gas_limit, payer, invoke_code, attributes, signers,
                          hash_value)
         res = self.__sdk.rpc.send_raw_transaction_pre_exec(tx)
-        return bytes.fromhex(res).decode()
+        return res.decode('hex')
 
     def query_symbol(self, asset):
         """
@@ -164,7 +165,7 @@ class Asset(object):
         tx = Transaction(version, tx_type, unix_time_now, gas_price, gas_limit, payer, invoke_code, attributes, signers,
                          hash_value)
         res = self.__sdk.rpc.send_raw_transaction_pre_exec(tx)
-        return bytes.fromhex(res).decode()
+        return res.decode('hex')
 
     def query_decimals(self, asset):
         """
@@ -228,7 +229,7 @@ class Asset(object):
         raw_from = Address.b58decode(b58_from_address).to_array()
         raw_to = Address.b58decode(b58_to_address).to_array()
         raw_payer = Address.b58decode(b58_payer_address).to_array()
-        state = [{"from": raw_from, "to": raw_to, "amount": amount}]
+        state = [OrderedDict([("from", raw_from), ("to", raw_to), ("amount", amount)])]
         invoke_code = build_native_invoke_code(contract_address, chr(0), "transfer", state)
         unix_time_now = int(time())
         version = 0
@@ -275,7 +276,8 @@ class Asset(object):
         raw_send = Address.b58decode(b58_send_address).to_array()
         raw_recv = Address.b58decode(b58_recv_address).to_array()
         raw_payer = Address.b58decode(b58_payer_address).to_array()
-        args = {"from": raw_send, "to": raw_recv, "amount": amount}
+        args = OrderedDict([
+            ("from", raw_send), ("to", raw_recv), ("amount", amount)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "approve", args)
         unix_time_now = int(time())
         return Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, raw_payer, invoke_code, bytearray(), [],
@@ -311,7 +313,8 @@ class Asset(object):
         raw_to = Address.b58decode(b58_recv_address).to_array()
         raw_payer = Address.b58decode(b58_payer_address).to_array()
         contract_address = util.get_asset_address(asset)
-        args = {"sender": raw_sender, "from": raw_from, "to": raw_to, "amount": amount}
+        args = OrderedDict([
+            ("sender", raw_sender), ("from", raw_from), ("to", raw_to), ("amount", amount)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "transferFrom", args)
         unix_time_now = int(time())
         return Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, raw_payer, invoke_code, bytearray(), [],
@@ -351,8 +354,11 @@ class Asset(object):
             raise SDKException(ErrorCode.other_error('the gas limit should be equal or greater than zero.'))
         ont_contract_address = util.get_asset_address('ont')
         ong_contract_address = util.get_asset_address("ong")
-        args = {"sender": Address.b58decode(b58_claimer_address).to_array(), "from": ont_contract_address,
-                "to": Address.b58decode(b58_recv_address).to_array(), "value": amount}
+        args = OrderedDict([
+            ("sender", Address.b58decode(b58_claimer_address).to_array()),
+            ("from", ont_contract_address),
+            ("to", Address.b58decode(b58_recv_address).to_array()),
+            ("value", amount)])
         invoke_code = build_native_invoke_code(ong_contract_address, chr(0), "transferFrom", args)
         unix_time_now = int(time())
         payer_array = Address.b58decode(b58_payer_address).to_array()

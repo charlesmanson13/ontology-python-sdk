@@ -1,3 +1,4 @@
+import os
 import time
 import unittest
 
@@ -13,6 +14,12 @@ peer_publickey = "021b16a2f74c430256203685c9b742c7c27260b0bb3e76e75fd52bf3065226
 
 
 class TestGovernance(unittest.TestCase):
+
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
 
     def test_prepare(self):
         sdk.wallet_manager.open_wallet("./TestGovernance.json")

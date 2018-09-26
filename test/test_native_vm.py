@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.account.account import Account
@@ -23,6 +23,12 @@ acct4 = Account(private_key4, SignatureScheme.SHA256withECDSA)
 
 
 class TestNativeVm(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_native_vm_transaction(self):
         sdk.set_rpc(rpc_address)
         asset = sdk.native_vm().asset()

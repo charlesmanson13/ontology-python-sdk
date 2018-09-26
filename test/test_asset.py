@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import time
 import unittest
 
@@ -17,6 +17,12 @@ sdk.rpc.set_address(rpc_address)
 
 
 class TestAsset(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_get_asset_address(self):
         asset = sdk.native_vm().asset()
         ont_address = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01'

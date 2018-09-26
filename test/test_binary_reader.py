@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.io.binary_reader import BinaryReader
@@ -9,6 +9,12 @@ from ontology.io.memory_stream import StreamManager
 
 
 class TestBinaryReader(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_read_var_int(self):
         value = 123
         writer_stream = StreamManager.GetStream()

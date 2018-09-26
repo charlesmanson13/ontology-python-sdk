@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.common.error_code import ErrorCode
@@ -9,6 +9,12 @@ from ontology.exception.exception import SDKRuntimeException
 
 
 class TestSDKException(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_sdk_exception(self):
         try:
             raise SDKException(ErrorCode.param_error)

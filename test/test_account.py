@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import base64
+import os
 import unittest
 
 from ontology.utils import util
@@ -12,6 +13,12 @@ from ontology.crypto.signature_scheme import SignatureScheme
 
 
 class TestAccount(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_account_data_constructor(self):
         data = AccountData()
         self.assertEqual(data.algorithm, 'ECDSA')

@@ -26,6 +26,12 @@ acct3 = Account(private_key3, SignatureScheme.SHA256withECDSA)
 
 
 class TestOntologySdk(TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_open_wallet(self):
         path = os.path.join(os.getcwd(), 'test.json')
         wallet = sdk.open_wallet(path)

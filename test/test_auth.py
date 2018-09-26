@@ -1,4 +1,5 @@
 import json
+import os
 import time
 import unittest
 from binascii import a2b_hex
@@ -30,6 +31,12 @@ abi_str = '{"hash":"0xbc9795db0abe9d2d9ea565286a237dbf6b407165","entrypoint":"Ma
 
 
 class TestAuth(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_aa(self):
         aa = '0000000000000000000000000000000000000006'
         print(Address(a2b_hex(aa.encode())).to_array())

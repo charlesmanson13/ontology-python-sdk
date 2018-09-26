@@ -1,12 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.crypto.scrypt import Scrypt
 
 
 class TestScrypt(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_set_dk_len(self):
         dk_len = 64
         scrypt = Scrypt()

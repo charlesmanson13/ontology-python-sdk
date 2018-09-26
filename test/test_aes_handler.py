@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from Cryptodome import Random
@@ -10,6 +10,12 @@ from ontology.crypto.aes_handler import AESHandler
 
 
 class TestAesHandler(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_aes_cbc(self):
         key = b'Sixteen byte key'
         plain_text = b'Attack at dawn'

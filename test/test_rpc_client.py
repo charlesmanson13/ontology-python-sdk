@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import binascii
+import os
 import unittest
 
 from ontology.ont_sdk import OntologySdk
@@ -25,6 +26,12 @@ multi_addr = Address.address_from_multi_pub_keys(2, pubkeys)
 
 
 class TestRpcClient(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_get_version(self):
         version = sdk.rpc.get_version()
         self.assertEqual("v1.0.3-rc", version)

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-
+import os
 import unittest
 
 from ontology.core.transaction import Transaction
@@ -8,6 +8,12 @@ from ontology.utils import util
 
 
 class TestTransaction(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_deserialize_from(self):
         tx_hex = "00d14b09645bf401000000000000204e0000000000004756c9dd829b2142883adbe1ae4f8689a1f673e97100c66b14dfa5e7" \
                  "b46640490f7fd2fcd82fe986e7e3f14a696a7cc814d2c124dd088190f709b684e0bc676d70c41b37766a7cc8516a7cc86c51" \

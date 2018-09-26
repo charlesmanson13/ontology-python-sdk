@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import binascii
+import os
 import time
 import unittest
 
@@ -18,6 +19,12 @@ sdk.rpc.set_address(rpc_address)
 
 
 class TestOntId(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_new_registry_ont_id_transaction(self):
         ont_id = sdk.native_vm().ont_id()
         private_key = '75de8489fcb2dcaf2ef3cd607feffde18789de7da129b5e97c81e001793cb7cf'

@@ -14,6 +14,12 @@ from ontology.crypto.signature_scheme import SignatureScheme
 
 
 class TestWalletManager(unittest.TestCase):
+    def tearDown(self):
+        try:
+            os.remove('wallet.dat')
+        except:
+            pass
+
     def test_create_write(self):
         wm = WalletManager()
         path = os.path.join(os.getcwd(), 'test.json')
