@@ -13,7 +13,6 @@ from ontology.smart_contract.native_contract.asset import Asset
 
 sdk = OntologySdk()
 rpc_address = 'http://polaris3.ont.io:20336'
-sdk.rpc.set_address(rpc_address)
 private_key1 = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
 private_key2 = '75de8489fcb2dcaf2ef3cd607feffde18789de7da129b5e97c81e001793cb7cf'
 private_key3 = '1383ed1fe570b6673351f1a30a66b21204918ef8f673e864769fa2a653401114'
@@ -25,6 +24,10 @@ multi_addr = Address.address_from_multi_pub_keys(2, pubkeys)
 
 
 class TestRpcClient(unittest.TestCase):
+
+    def setUp(self):
+        sdk.set_rpc(rpc_address)
+
     def test_get_version(self):
         version = sdk.rpc.get_version()
         self.assertEqual("v1.0.3-rc", version)

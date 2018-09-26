@@ -13,10 +13,13 @@ from ontology.smart_contract.native_contract.asset import Asset
 
 rpc_address = 'http://polaris3.ont.io:20336'
 sdk = OntologySdk()
-sdk.rpc.set_address(rpc_address)
 
 
 class TestAsset(unittest.TestCase):
+
+    def setUp(self):
+        sdk.set_rpc(rpc_address)
+
     def test_get_asset_address(self):
         asset = sdk.native_vm().asset()
         ont_address = b'\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01'

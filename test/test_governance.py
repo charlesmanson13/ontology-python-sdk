@@ -5,7 +5,7 @@ from ontology.account.account import Account
 from ontology.ont_sdk import OntologySdk
 
 sdk = OntologySdk()
-sdk.rpc.set_address("http://139.219.128.220:20336")
+rpc_address = "http://139.219.128.220:20336"
 password = "111111"
 
 account1 = Account('b2a7b886e69fd7fd9f12d746524d7f4ac00fce349f028900328dbbe09ba2ec23')
@@ -13,6 +13,9 @@ peer_publickey = "021b16a2f74c430256203685c9b742c7c27260b0bb3e76e75fd52bf3065226
 
 
 class TestGovernance(unittest.TestCase):
+
+    def setUp(self):
+        sdk.set_rpc(rpc_address)
 
     def test_prepare(self):
         sdk.wallet_manager.open_wallet("./TestGovernance.json")
