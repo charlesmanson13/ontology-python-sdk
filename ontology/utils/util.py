@@ -211,8 +211,9 @@ def bigint_to_neo_bytes(data):
     if data < 0:
         data_bytes2 = int_to_bytearray(-data)
         b = data_bytes2[0]
+        data_bytes = bytearray(data_bytes)
         data_bytes.reverse()
-        if b >> 7 == 1:
+        if ord(b) >> 7 == 1:
             res = data_bytes[:] + bytearray([255])
             return res
         return data_bytes
@@ -238,6 +239,8 @@ def int_to_bytearray(data):
     if bit_length <= t:
         bit_length += 1
     fmt_string = '{:0' + str(bit_length * 2) + 'x}'
+    if data < 0:
+        data = int('1' + '00' * bit_length, 16) + data
     return fmt_string.format(data).decode('hex')
     # return bytearray(data.to_bytes(bit_length, "big", signed=True))
     # if data < 0:
