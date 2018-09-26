@@ -218,7 +218,8 @@ def bigint_to_neo_bytes(data):
         return data_bytes
     else:
         b = data_bytes[0]
-        data_bytes = bytearray(data_bytes).reverse()
+        data_bytes = bytearray(data_bytes)
+        data_bytes.reverse()
         if ord(b) >> 7 == 1:
             res = data_bytes[:] + bytearray([0])
             return res

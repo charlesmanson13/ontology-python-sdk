@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import json
+from collections import OrderedDict
 from time import time
 from binascii import a2b_hex
 
@@ -55,7 +56,12 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_pubkey": peer_pubkey, "address": account.get_address().to_array(), "init_pos": init_pos, "ontid": identity.ont_id.encode(), "key_no": key_no}
+        param = OrderedDict([
+            ("peer_pubkey", peer_pubkey),
+            ("address", account.get_address().to_array()),
+            ("init_pos", init_pos),
+            ("ontid", identity.ont_id.encode()),
+            ("key_no", key_no)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "registerCandidate", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [],
@@ -84,7 +90,7 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_pubkey":peer_pubkey, "address": account.get_address().to_array()}
+        param = OrderedDict([("peer_pubkey", peer_pubkey), ("address", account.get_address().to_array())])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "unRegisterCandidate", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -108,7 +114,7 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"address": account.get_address().to_array()}
+        param = OrderedDict([("address", account.get_address().to_array())])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "withdrawOng", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -132,7 +138,7 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"address": account.get_address().to_array()}
+        param = OrderedDict([("address", account.get_address().to_array())])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "withdrawFee", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -162,7 +168,8 @@ class Governance(object):
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(pos_lists):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
-        param = {"address": account.get_address().to_array(), "publickeys_length": len(peer_publickeys)}
+        param = OrderedDict([
+            ("address", account.get_address().to_array()), ("publickeys_length", len(peer_publickeys))])
         for i in range(len(peer_publickeys)):
             param["publickey" + str(i)] = peer_publickeys[i]
         param["pos_lists_length"] = len(pos_lists)
@@ -197,7 +204,8 @@ class Governance(object):
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(pos_lists):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
-        param = {"address": account.get_address().to_array(), "publickeys_length": len(peer_publickeys)}
+        param = OrderedDict([
+            ("address", account.get_address().to_array()), ("publickeys_length", len(peer_publickeys))])
         for i in range(len(peer_publickeys)):
             param["publickey" + str(i)] = peer_publickeys[i]
         param["pos_lists_length"] = len(pos_lists)
@@ -232,7 +240,8 @@ class Governance(object):
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         if len(peer_publickeys) != len(withdraw_list):
             raise Exception("the length of peer_publickeys should equal the length of pos_lists")
-        param = {"address": account.get_address().to_array(), "publickeys_length": len(peer_publickeys)}
+        param = OrderedDict([
+            ("address", account.get_address().to_array()), ("publickeys_length", len(peer_publickeys))])
         for i in range(len(peer_publickeys)):
             param["publickey" + str(i)] = peer_publickeys[i]
         param["pos_lists_length"] = len(withdraw_list)
@@ -263,7 +272,7 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array()}
+        param = OrderedDict([("peer_publickey", peer_publickey), ("address", account.get_address().to_array())])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "quitNode", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -291,7 +300,7 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "maxAuthorize": max_authorize}
+        param = OrderedDict([("peer_publickey", peer_publickey), ("address", account.get_address().to_array()), ("maxAuthorize", max_authorize)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "changeMaxAuthorization", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -319,7 +328,8 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "pos": pos}
+        param = OrderedDict([
+            ("peer_publickey", peer_publickey), ("address", account.get_address().to_array()), ("pos", pos)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "addInitPos", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -347,7 +357,8 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "pos": pos}
+        param = OrderedDict([
+            ("peer_publickey", peer_publickey), ("address", account.get_address().to_array()), ("pos", pos)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "reduceInitPos", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -375,7 +386,8 @@ class Governance(object):
         :return:
         """
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
-        param = {"peer_publickey": peer_publickey, "address": account.get_address().to_array(), "peer_cost": peer_cost}
+        param = OrderedDict([
+            ("peer_publickey", peer_publickey), ("address", account.get_address().to_array()), ("peer_cost", peer_cost)])
         invoke_code = build_native_invoke_code(contract_address, chr(0), "setPeerCost", param)
         unix_time_now = int(time())
         tx = Transaction(0, 0xd1, unix_time_now, gas_price, gas_limit, payer.get_address().to_array(), invoke_code, bytearray(), [], bytearray())
@@ -450,7 +462,7 @@ class Governance(object):
         total_bytes = self.TOTAL_STAKE.encode('utf-8')
         address_bytes = Address.b58decode(address).to_array()
         key = total_bytes + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
+        res = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(res))
@@ -472,7 +484,7 @@ class Governance(object):
         peer_attributes = self.PEER_ATTRIBUTES.encode('utf-8')
         peer_pubkey_bytes = a2b_hex(peer_pubkey.encode())
         key = peer_attributes + peer_pubkey_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
+        res = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         peer_attributes = PeerAttributes()
@@ -494,7 +506,7 @@ class Governance(object):
         split_fee_address_bytes = self.SPLIT_FEE_ADDRESS.encode()
         address_bytes = Address.b58decode(address).to_array()
         key = split_fee_address_bytes + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
+        res = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), key.encode('hex'))
         if res is None or res == '':
             return None
         split_fee_address = SplitFeeAddress()
@@ -519,7 +531,7 @@ class Governance(object):
     def __get_peer_pool_map(self, peer_pubkey=None):
         contract_address = bytearray.fromhex(self.CONTRACT_ADDRESS)
         contract_address.reverse()
-        view = self.__sdk.rpc.get_storage(contract_address.encode('hex'), self.GOVERNANCE_VIEW.encode().encode('hex'))
+        view = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), self.GOVERNANCE_VIEW.encode().encode('hex'))
         if view is None or view == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(view))
@@ -533,7 +545,7 @@ class Governance(object):
         view_bytes = stream2.ToArray()
         peer_pool_bytes = self.PEER_POOL.encode('utf-8')
         key_bytes = peer_pool_bytes + a2b_hex(view_bytes)
-        value = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key_bytes.encode('hex'))
+        value = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), key_bytes.encode('hex'))
         if value is None or value == '':
             return None
         stream3 = StreamManager.GetStream(bytearray.fromhex(value))
@@ -565,7 +577,7 @@ class Governance(object):
         address_bytes = addr.to_array()
         authorize_info_pool = self.AUTHORIZE_INFO_POOL.encode()
         key = authorize_info_pool + peer_pubkey_prefix + address_bytes
-        res = self.__sdk.rpc.get_storage(contract_address.encode('hex'), key.encode('hex'))
+        res = self.__sdk.rpc.get_storage(bytes(contract_address).encode('hex'), bytes(key).encode('hex'))
         if res is None or res == '':
             return None
         stream = StreamManager.GetStream(bytearray.fromhex(res))
