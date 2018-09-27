@@ -7,11 +7,6 @@ from ontology.utils import util
 
 
 class TestUtil(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_get_random_bytes(self):
         try:
@@ -64,16 +59,16 @@ class TestUtil(unittest.TestCase):
         bs7 = util.bigint_to_neo_bytes(8446192)
         bs8 = util.bigint_to_neo_bytes(-0)
         bs9 = util.bigint_to_neo_bytes(0)
-        self.assertEqual(bs.encode('hex'), "abaaaaaaaaaaab80")
-        self.assertEqual(bs1.encode('hex'), "555555555555547f")
-        self.assertEqual(bs2.encode('hex'), "5555555555555480")
-        self.assertTrue(bs3.encode('hex') == "abaaaaaaaaaaab7f")
-        self.assertTrue(bs4.encode('hex') == "101f80")
-        self.assertTrue(bs5.encode('hex') == "f0e07f")
-        self.assertTrue(bs6.encode('hex') == "101f7fff")
-        self.assertTrue(bs7.encode('hex') == "f0e08000")
-        print(bs8.encode('hex'))
-        print(bs9.encode('hex'))
+        self.assertEqual(bytes(bs).encode('hex'), "abaaaaaaaaaaab80")
+        self.assertEqual(bytes(bs1).encode('hex'), "555555555555547f")
+        self.assertEqual(bytes(bs2).encode('hex'), "5555555555555480")
+        self.assertTrue(bytes(bs3).encode('hex') == "abaaaaaaaaaaab7f")
+        self.assertTrue(bytes(bs4).encode('hex') == "101f80")
+        self.assertTrue(bytes(bs5).encode('hex') == "f0e07f")
+        self.assertTrue(bytes(bs6).encode('hex') == "101f7fff")
+        self.assertTrue(bytes(bs7).encode('hex') == "f0e08000")
+        print(bytes(bs8).encode('hex'))
+        print(bytes(bs9).encode('hex'))
 
 
 if __name__ == '__main__':

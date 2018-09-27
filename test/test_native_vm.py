@@ -23,11 +23,6 @@ acct4 = Account(private_key4, SignatureScheme.SHA256withECDSA)
 
 
 class TestNativeVm(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_native_vm_transaction(self):
         sdk.set_rpc(rpc_address)

@@ -14,7 +14,6 @@ from ontology.wallet.wallet import WalletData
 
 rpc_address = 'http://polaris3.ont.io:20336'
 sdk = OntologySdk()
-sdk.rpc.set_address(rpc_address)
 
 private_key1 = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
 private_key2 = '75de8489fcb2dcaf2ef3cd607feffde18789de7da129b5e97c81e001793cb7cf'
@@ -26,11 +25,9 @@ acct3 = Account(private_key3, SignatureScheme.SHA256withECDSA)
 
 
 class TestOntologySdk(TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
+
+    def setUp(self):
+        sdk.rpc.set_address(rpc_address)
 
     def test_open_wallet(self):
         path = os.path.join(os.getcwd(), 'test.json')

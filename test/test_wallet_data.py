@@ -10,11 +10,6 @@ from ontology.wallet.account import AccountData
 
 
 class TestWalletData(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_init(self):
         wallet = WalletData()

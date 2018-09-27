@@ -9,11 +9,6 @@ from ontology.smart_contract.neo_contract.abi.abi_info import AbiInfo
 
 
 class TestAbiInfo(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_init(self):
         str_abi = '{"hash":"0x362cb5608b3eca61d4846591ebb49688900fedd0","entrypoint":"Main","functions":' \

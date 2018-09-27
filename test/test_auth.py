@@ -13,7 +13,6 @@ from ontology.smart_contract.neo_contract.abi.abi_info import AbiInfo
 # rpc_address = 'http://polaris3.ont.io:20336'
 rpc_address = 'http://127.0.0.1:20336'
 sdk = OntologySdk()
-sdk.set_rpc(rpc_address)
 private_key = '523c5fcf74823831756f0bcb3634234f10b3beb1c05595058534577752ad2d9f'
 private_key2 = '75de8489fcb2dcaf2ef3cd607feffde18789de7da129b5e97c81e001793cb7cf'
 private_key3 = '1383ed1fe570b6673351f1a30a66b21204918ef8f673e864769fa2a653401114'
@@ -31,11 +30,8 @@ abi_str = '{"hash":"0xbc9795db0abe9d2d9ea565286a237dbf6b407165","entrypoint":"Ma
 
 
 class TestAuth(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
+    def setUp(self):
+        sdk.set_rpc(rpc_address)
 
     def test_aa(self):
         aa = '0000000000000000000000000000000000000006'

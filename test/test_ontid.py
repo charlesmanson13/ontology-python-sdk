@@ -15,15 +15,12 @@ from ontology.crypto.signature_scheme import SignatureScheme
 
 rpc_address = 'http://polaris3.ont.io:20336'
 sdk = OntologySdk()
-sdk.rpc.set_address(rpc_address)
 
 
 class TestOntId(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
+
+    def setUp(self):
+        sdk.rpc.set_address(rpc_address)
 
     def test_new_registry_ont_id_transaction(self):
         ont_id = sdk.native_vm().ont_id()

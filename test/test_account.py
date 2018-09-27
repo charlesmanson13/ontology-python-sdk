@@ -13,11 +13,6 @@ from ontology.crypto.signature_scheme import SignatureScheme
 
 
 class TestAccount(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_account_data_constructor(self):
         data = AccountData()

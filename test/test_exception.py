@@ -9,11 +9,6 @@ from ontology.exception.exception import SDKRuntimeException
 
 
 class TestSDKException(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_sdk_exception(self):
         try:

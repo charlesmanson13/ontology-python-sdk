@@ -7,11 +7,6 @@ from ontology.crypto.digest import Digest
 
 
 class TestDigest(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_sha256(self):
         msg = b'Nobody inspects the spammish repetition'

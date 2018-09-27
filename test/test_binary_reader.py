@@ -9,11 +9,6 @@ from ontology.io.memory_stream import StreamManager
 
 
 class TestBinaryReader(unittest.TestCase):
-    def tearDown(self):
-        try:
-            os.remove('wallet.dat')
-        except:
-            pass
 
     def test_read_var_int(self):
         value = 123
